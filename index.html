@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frise Chronologique avec D3.js</title>
+    <link rel="icon" type="image/webp" href="/res/logo_trans_purple_144.png" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body>
+    <div id="chart-container"></div>
+
+    <div id="toolbox">
+      <a>Toolbox : </a>
+      <button class="modern-button" id="btnAddDate">
+        Ajouter une date
+      </button>
+      <button class="modern-button">Ajouter un evenement</button>
+      <button class="modern-button" onclick="resetZoom()">Reset du zoom</button>
+    </div>
+
+    <div id="tooltip">
+      <p><strong>Date:</strong> <span id="tooltip-date"></span></p>
+      <p><strong>Event:</strong> <span id="tooltip-event"></span></p>
+    </div>
+
+    <!-- SCRIPT -->
+    <script type="module" src="res/js/main.js"></script>
+    </body>
+</html>

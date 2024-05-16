@@ -1,0 +1,83 @@
+#chart-container {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: #242423;
+  justify-content: center;
+  align-items: center;
+}
+
+#tooltip {
+  padding: 15px;
+  margin: 0px;
+  position: absolute;
+  border-radius: 5px;
+  background-color: #191919b5;
+  z-index: 9999;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  display: none;
+}
+
+#tooltip > * {
+  margin-bottom: 5px;
+}
+
+#toolbox {
+  padding: 15px;
+  position: absolute;
+  border-radius: 5px;
+  top: 50%;
+  right: 25px;
+  width: 200px;
+  background-color: #191919b5;
+  z-index: 9999; /* Assure que la div est au-dessus de tous les autres éléments */
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#toolbox > * {
+  margin-bottom: 5px;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Police d'écriture moderne */
+  color: #e4e4e4;
+  background-color: black;
+}
+
+/* Styles de base */
+.modern-button {
+  background-color: #23b77a; /* Couleur de fond */
+  border: none; /* Pas de bordure */
+  color: white; /* Couleur du texte */
+  padding: 7px 10px; /* Espacement à l'intérieur du bouton */
+  text-align: center; /* Alignement du texte */
+  text-decoration: none; /* Pas de soulignement */
+  display: inline-block; /* Afficher en ligne */
+  font-size: 16px; /* Taille de la police */
+  margin: 4px 2px; /* Marge autour du bouton */
+  cursor: pointer; /* Curseur */
+  border-radius: 8px; /* Bord arrondi */
+  transition-duration: 0.4s; /* Durée de l'animation */
+}
+
+/* Style au survol */
+.modern-button:hover {
+  background-color: #1c9764; /* Nouvelle couleur de fond */
+  color: white; /* Nouvelle couleur du texte */
+}
+
+/* Style enfoncé */
+.modern-button:active {
+  background-color: #16724c; /* Nouvelle couleur de fond enfoncée */
+  color: white; /* Nouvelle couleur du texte enfoncé */
+}
