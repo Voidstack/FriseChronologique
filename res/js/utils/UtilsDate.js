@@ -1,3 +1,4 @@
+
 export class UtilsDate {
   // Retourne la dernière date d'une [] de dates
   static getLastDate(dates) {

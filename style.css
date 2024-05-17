@@ -1,3 +1,6 @@
+html { overflow-y: hidden; }
+main { overflow-y: visible }
+
 #chart-container {
   margin: 0;
   padding: 0;
@@ -8,6 +11,13 @@
   background: #242424;
   justify-content: center;
   align-items: center;
+}
+
+#menu-container{
+  background-color: #1f1f1f;
+  overflow: auto;
+  margin-top: 5px;
+  padding: 10px;
 }
 
 #tooltip {
@@ -80,4 +90,14 @@ body {
 .modern-button:active {
   background-color: #16724c; /* Nouvelle couleur de fond enfoncée */
   color: white; /* Nouvelle couleur du texte enfoncé */
+}
+
+.color1{
+  background-color:red;
+}
+.color2{
+  background-color:pink;
+}
+.color3{
+  background-color:blue;
 }

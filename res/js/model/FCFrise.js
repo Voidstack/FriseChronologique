@@ -1,5 +1,5 @@
 import { UtilsArray } from "../utils/UtilsArray.js";
-import { UtilsDate } from "../utils/UtilsDate.js" 
+import { UtilsDate } from "../utils/UtilsDate.js";
 
 export class FCFrise {
   constructor() {
@@ -30,6 +30,10 @@ export class FCFrise {
     this.heightDate = 40;
     this.heightPeriod = 100;
     this.heightEvent = 150;
+
+    this.fontSizePeriod = "24px";
+    this.fontSizeDate = "24px";
+    this.fontSizeEvent = "24px";
 
     // Dimensions de la frise chronologique
     this.width = parent.innerWidth - 30;
@@ -69,7 +73,6 @@ export class FCFrise {
   //#region FUNCTION
   callOnWheel(event) {
     const isZoomIn = event.deltaY < 0;
-    console.log(isZoomIn ? "zoom" : "unzoom");
 
     if (isZoomIn) {
       this.width += this.zoomFactor;
@@ -85,10 +88,12 @@ export class FCFrise {
   }
 
   redimensionner() {
-    this.svg.select("#chart-container").append("svg").attr("width", this.width);
+    d3.select("#chart-container").attr("width", this.width);
+
+    // Création de l'élément SVG
+
     // Échelles axe X
     this.xScale.range([this.margin.left, this.width - this.margin.right]);
-
     this.actualiserFrise();
   }
 
@@ -115,6 +120,8 @@ export class FCFrise {
   // Fonction pour actualiser la frise chronologique avec les nouvelles données
   actualiserFrise() {
     this.svg.selectAll("*").remove();
+
+    this.svg.attr("width", this.width);
 
     this.xScale = d3
       .scaleTime()
@@ -196,7 +203,7 @@ export class FCFrise {
         "font-family",
         "Roboto, Noto Sans, system-ui, -apple-system, Segoe UI, sans-serif"
       ) // Changer la police du texte
-      .style("font-size", "24px")
+      .style("font-size", this.fontSizePeriod)
       .style("fill", "black");
 
     // Ajout des lignes pour représenter les evenements
@@ -250,11 +257,6 @@ export class FCFrise {
       .append("g")
       .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
       .call(d3.axisBottom(this.xScale));
-
-    /* svg
-      .append("g")
-      .attr("transform", `translate(${margin.left},0)`)
-      .call(d3.axisLeft(yScale));*/
   }
   //#endregion
 }

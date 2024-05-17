@@ -1,31 +1,53 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Frise Chronologique avec D3.js</title>
-    <link rel="icon" type="image/webp" href="/res/logo_trans_purple_144.png" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-  </head>
-  <body>
-    <div id="chart-container"></div>
 
-    <div id="toolbox">
-      <a>Toolbox : </a>
-      <button class="modern-button" id="btnAddDate">
-        Ajouter une date
-      </button>
-      <button class="modern-button">Ajouter un evenement</button>
-      <button class="modern-button" onclick="resetZoom()">Reset du zoom</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frise Chronologique avec D3.js</title>
+  <link rel="icon" type="image/webp" href="/res/logo_trans_purple_144.png" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script type="module" src="res/js/main.js"></script>
+</head>
+
+<body>
+  <div id="chart-container"></div>
+  <div id="menu-container">
+      <h3>Ajouter une date</h3>
+    <div>
+      <input type="text" id="newDateTitre"> : Titre</input>
     </div>
-
-    <div id="tooltip">
-      <p><strong>Date:</strong> <span id="tooltip-date"></span></p>
-      <p><strong>Event:</strong> <span id="tooltip-event"></span></p>
+    <div>
+      <input type="date" id="newDateDate"> : Date</input>
     </div>
+    <button class="modern-button" onclick="btnAddDate()">
+      Ajouter la date
+    </button>
+  </div>
 
-    <!-- SCRIPT -->
-    <script type="module" src="res/js/main.js"></script>
-    </body>
+  <div id="toolbox">
+    <a>Toolbox : </a>
+    <button class="modern-button" id="btnAddDateold" onclick="ajouterDate()">
+      Ajouter une date
+    </button>
+    <button class="modern-button">Ajouter un evenement</button>
+    <button class="modern-button" onclick="resetZoom()">Reset du zoom</button>
+    <input type="number" id="txtSizePeriod" />
+    <input type="number" id="txtSizeEvent" />
+    <input type="number" id="txtSizeDate" />
+    <select id="select">
+      <option hidden selected value="">Choose a color</option>
+      <option value="red" class="color color1"></option>
+      <option value="pink" class="color color2"></option>
+      <option value="blue" class="color color3"></option>
+    </select>
+  </div>
+
+  <div id="tooltip">
+    <p><strong>Date:</strong> <span id="tooltip-date"></span></p>
+    <p><strong>Event:</strong> <span id="tooltip-event"></span></p>
+  </div>
+</body>
+
 </html>

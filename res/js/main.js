@@ -14,30 +14,74 @@ const dataPeriodes = [
 
 const frise = new FCFrise();
 
-document.querySelector('#btnAddDate').addEventListener('click', ajouterEvenement);
+document
+  .querySelector("#txtSizePeriod")
+  .addEventListener("input", debounce(changeSizePeriod, 500));
+document
+  .querySelector("#txtSizeEvent")
+  .addEventListener("input", debounce(changeSizeEvent, 500));
+document
+  .querySelector("#txtSizeDate")
+  .addEventListener("input", debounce(changeSizeDate, 500));
 
-onwheel = function(event) {
+onwheel = function (event) {
   frise.callOnWheel(event);
 };
 
-// Fonction pour ajouter un événement
-function ajouterEvenement() {
-  const nouvelEvenement = prompt("Entrez le nom de l'événement :");
-  const nouvelleDate = prompt(
-    "Entrez la date de l'événement (format YYYY-MM-DD) :"
-  );
-  if (nouvelEvenement && nouvelleDate) {
-    frise.dataDate.push({
-      dateDebut: parseDate(nouvelleDate),
-      event: nouvelEvenement,
-    });
-    frise.actualiserFriseChronologique();
-  } else {
-    alert("Les informations saisies ne sont pas valides.");
-  }
+function changeSizePeriod(event) {
+  frise.fontSizePeriod = event.target.value + "px";
+  frise.actualiserFrise();
 }
-/*
-window.onresize = () => {
-  width = parent.innerWidth - 30;
-  redimensionner();
-};*/
+
+function changeSizeEvent(event) {
+  frise.fontSizeEvent = event.target.value + "px";
+  frise.actualiserFrise();
+}
+
+function changeSizeDate(event) {
+  frise.fontSizeDate = event.target.value + "px";
+  frise.actualiserFrise();
+}
+
+// Fonction pour ajouter un événement
+function ajouterDate() {
+  console.log("ntm");
+  FCDate.addDate(frise);
+}
+
+function btnAddDate() {
+  var titre = document.getElementById("newDateTitre");
+  var date = document.getElementById("newDateDate");
+
+  FCDate.addDate(frise, titre, date);
+}
+
+window.addEventListener(
+  "resize",
+  debounce(function () {
+    var bodyHeight =
+      window.innerHeight ||
+      document.documentElement.clientHeight ||
+      document.body.clientHeight;
+
+    //    <div id="chart-container"></div>
+    //  <div id="menu-container"></div>
+
+    var element = document.getElementById("chart-container");
+    var positionInfo = element.getBoundingClientRect();
+    var c1H = positionInfo.height;
+
+    var newHeight = bodyHeight - c1H;
+    document.getElementById("menu-container").style.height = newHeight + "px";
+  })
+);
+
+// debouncing pour optimiser les perf et éviter de faire crash le moteur de recherche
+// cimer chatgpt
+function debounce(func, wait) {
+  let timeout;
+  return function () {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, arguments), wait);
+  };
+}
