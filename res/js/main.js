@@ -14,6 +14,8 @@ const dataPeriodes = [
 
 const frise = new FCFrise();
 
+const loadingIcons = document.getElementsByClassName("loading-icon");
+
 document
   .querySelector("#txtSizePeriod")
   .addEventListener("input", debounce(changeSizePeriod, 500));
@@ -91,6 +93,33 @@ function debounce(func, wait) {
   let timeout;
   return function () {
     clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, arguments), wait);
+    displayLoadingIcones(true);
+    timeout = setTimeout(() => {
+      func.apply(this, arguments);
+      displayLoadingIcones(false);
+    }, wait);
   };
+}
+
+var isLoading = false;
+/**
+ * Définit si les icones de loading doivent s'afficher ou non.
+ * @param {boolean} shouldDisplay
+ */
+function displayLoadingIcones(shouldDisplay) {
+  if (isLoading == shouldDisplay) return;
+  console.log("isLoading : " + shouldDisplay);
+  isLoading = shouldDisplay;
+
+  console.log(loadingIcons);
+
+  for (var i = 0; i < loadingIcons.length; i++) {
+    // Si le paramètre afficher est vrai, ajouter la classe pour afficher
+    // Sinon, retirer la classe pour masquer
+    if (shouldDisplay) {
+      loadingIcons[i].classList.toggle("fade");
+    } else {
+      loadingIcons[i].classList.toggle("fade");
+    }
+  }
 }

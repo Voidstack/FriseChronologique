@@ -3,6 +3,12 @@
   top: 15px;
   right: 15px;
   color: #fff;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.loading-icon.fade {
+  opacity: 1;
 }
 
 .absolute-parent {
