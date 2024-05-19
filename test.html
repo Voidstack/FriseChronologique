@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>D3.js Text Wrapping</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    .text-wrapper {
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <svg width="500" height="300"></svg>
+
+  <script>
+    const svg = d3.select("svg");
+    const text =
+      "Voici un exemple de texte qui devrait être automatiquement mis à la ligne après 20 caractères.";
+
+    // Fonction pour découper le texte en lignes de 20 caractères
+    function wrapText(text, maxChars) {
+      const words = text.split(" ");
+      let lines = [];
+      let currentLine = [];
+
+      words.forEach((word) => {
+        const testLine = [...currentLine, word].join(" ");
+        if (testLine.length > maxChars) {
+          lines.push(currentLine.join(" "));
+          currentLine = [word];
+        } else {
+          currentLine.push(word);
+        }
+      });
+
+      if (currentLine.length) {
+        lines.push(currentLine.join(" "));
+      }
+
+      return lines;
+    }
+
+    const lines = wrapText(text, 20);
+
+    // Ajout du texte dans le SVG avec D3.js
+    svg
+      .selectAll("text")
+      .data(lines)
+      .enter()
+      .append("text")
+      .attr("class", "text-wrapper")
+      .attr("x", 10)
+      .attr("y", (d, i) => 20 + i * 20) // Ajuste la position y pour chaque ligne
+      .attr("fill", "orange")
+      .text((d) => d);
+  </script>
+</body>
+
+</html>

@@ -1,5 +1,6 @@
 import { UtilsArray } from "../utils/UtilsArray.js";
 import { UtilsDate } from "../utils/UtilsDate.js";
+import { UtilsString } from "../utils/UtilsString.js";
 
 export class FCFrise {
   constructor() {
@@ -35,10 +36,12 @@ export class FCFrise {
     this.fontSizeDate = "24px";
     this.fontSizeEvent = "24px";
 
+    this.maxCharPerLigne = 50;
+
     // Dimensions de la frise chronologique
     this.width = parent.innerWidth - 30;
     this.height = 300; // A modifier un jour
-    this.margin = { top: 20, right: 30, bottom: 30, left: 40 };
+    this.margin = { top: 20, right: 0, bottom: 30, left: 40 };
 
     // Création de l'élément SVG
     this.svg = d3
@@ -121,7 +124,7 @@ export class FCFrise {
   actualiserFrise() {
     this.svg.selectAll("*").remove();
 
-    this.svg.attr("width", this.width);
+    this.svg.attr("width", this.width + 50); // + 50 pour permettre l'afficher la flèche qui est hors du cadre de la frise
 
     this.xScale = d3
       .scaleTime()
@@ -174,37 +177,45 @@ export class FCFrise {
         this.actualiserFrise();
       });
 
+    this.dessinerLaFleche();
+
     // Ajout du text pour les périodes
-    this.svg
-      .selectAll("period")
-      .data(this.dataPeriodes)
-      .enter()
-      .append("text")
-      .attr("text-anchor", "middle") // Ancre du texte au milieu (horizontal)
-      .attr("dominant-baseline", "middle") // Baseline centrée (vertical)
-      .attr("x", (d) => {
-        let dateDeFinDeLaPeriode = UtilsDate.dateSuivanteLaPlusProche(
-          d.dateDebut,
-          this.dataPeriodes.map((obj) => obj.dateDebut)
-        ); // On récupère la date de debut de la période suivante ou null si pas de période suivante
-        if (dateDeFinDeLaPeriode == null) {
-          return (this.xScale(this.parseDate(d.dateDebut)) + this.width) / 2;
-        } else {
-          return (
-            (this.xScale(this.parseDate(d.dateDebut)) +
-              this.xScale(this.parseDate(dateDeFinDeLaPeriode))) /
-            2
-          );
-        }
-      })
-      .attr("y", this.heightPeriod)
-      .text((d) => d.title)
-      .style(
-        "font-family",
-        "Roboto, Noto Sans, system-ui, -apple-system, Segoe UI, sans-serif"
-      ) // Changer la police du texte
-      .style("font-size", this.fontSizePeriod)
-      .style("fill", "black");
+    this.dataPeriodes.forEach((period) => {
+      var lines = UtilsString.wrapText(period.title, this.maxCharPerLigne);
+      this.svg
+        .selectAll("period")
+        .data(lines)
+        .enter()
+        .append("text")
+        .attr("text-anchor", "middle") // Ancre du texte au milieu (horizontal)
+        .attr("dominant-baseline", "middle") // Baseline centrée (vertical)
+        .attr("class", "bonjour")
+        .attr("x", () => {
+          let dateDeFinDeLaPeriode = UtilsDate.dateSuivanteLaPlusProche(
+            period.dateDebut,
+            this.dataPeriodes.map((obj) => obj.dateDebut)
+          ); // On récupère la date de debut de la période suivante ou null si pas de période suivante
+          if (dateDeFinDeLaPeriode == null) {
+            return (
+              (this.xScale(this.parseDate(period.dateDebut)) + this.width) / 2
+            );
+          } else {
+            return (
+              (this.xScale(this.parseDate(period.dateDebut)) +
+                this.xScale(this.parseDate(dateDeFinDeLaPeriode))) /
+              2
+            );
+          }
+        })
+        .attr(
+          "y",
+          (d, i) => this.heightPeriod + i * 20 - (lines.length - 1) * 10
+        )
+        .style("font-family", "Roboto, Noto Sans, system-ui")
+        .style("fill", "black")
+        .style("font-size", this.fontSizePeriod)
+        .text((d) => d);
+    });
 
     // Ajout des lignes pour représenter les evenements
     this.svg
@@ -257,6 +268,39 @@ export class FCFrise {
       .append("g")
       .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
       .call(d3.axisBottom(this.xScale));
+  }
+
+  dessinerLaFleche() {
+    let lastDate = UtilsDate.getLastDate(
+      this.dataDate.map((item) => new Date(item.dateDebut))
+    );
+
+    var x = this.xScale(lastDate);
+    var y = this.heightPeriod;
+
+    // Définir les coordonnées des sommets du triangle
+    var points = [
+      { x: x, y: y - 50 }, // Sommet supérieur
+      { x: x, y: y + 50 }, // Sommet inférieur gauche
+      { x: x + 50, y: y }, // Sommet inférieur droit
+    ];
+
+    // Utiliser d3.path() pour créer un chemin pour le triangle
+    var path = d3.path();
+    path.moveTo(points[0].x, points[0].y);
+    path.lineTo(points[1].x, points[1].y);
+    path.lineTo(points[2].x, points[2].y);
+    path.closePath();
+
+    var lastDataDate = this.dataPeriodes.at(-1);
+
+    // Ajouter le chemin à l'élément SVG
+    this.svg
+      .append("path")
+      .attr("d", path.toString())
+      .attr("fill", lastDataDate.color);
+    //  .attr("stroke", "black")
+    //  .attr("stroke-width", 2);
   }
   //#endregion
 }

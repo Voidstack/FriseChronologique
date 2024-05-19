@@ -1,0 +1,45 @@
+/* Styles pour les navigateurs WebKit (Chrome, Safari, etc.) */
+/* Modifier la largeur, la hauteur et les couleurs de la scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Barre de défilement principale */
+::-webkit-scrollbar-thumb {
+  background-color: #555; /* Couleur de la barre de défilement */
+  border-radius: 5px; /* Bordure arrondie */
+}
+
+/* Barre de défilement au survol */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #888; /* Couleur de la barre de défilement au survol */
+}
+
+/* Styles pour Firefox */
+/* Modifier la couleur de la scrollbar */
+/* Vous pouvez également ajuster la largeur et la hauteur si nécessaire */
+/* Le deuxième paramètre de scrollbar-color est la couleur de fond de la scrollbar */
+/* Le premier paramètre est la couleur de la barre de défilement */
+/* Notez que cette propriété est expérimentale et peut ne pas être prise en charge dans toutes les versions de Firefox */
+/* Dans ce cas, la scrollbar affichera la couleur par défaut du navigateur */
+html {
+  scrollbar-color: #555 #222; /* Couleur de la barre de défilement et couleur de fond */
+}
+
+/* Barre de défilement principale pour Firefox */
+/* Vous pouvez également personnaliser la taille et les autres propriétés de la scrollbar si nécessaire */
+/* La couleur est définie par scrollbar-color ci-dessus */
+/* Notez que cette propriété est expérimentale et peut ne pas être prise en charge dans toutes les versions de Firefox */
+/* Dans ce cas, la scrollbar affichera la couleur par défaut du navigateur */
+html {
+  scrollbar-width: thin; /* Épaisseur de la scrollbar */
+}
+
+/* Barre de défilement au survol pour Firefox */
+/* Vous pouvez également personnaliser la couleur au survol si nécessaire */
+/* Notez que cette propriété est expérimentale et peut ne pas être prise en charge dans toutes les versions de Firefox */
+/* Dans ce cas, la scrollbar affichera la couleur par défaut du navigateur */
+html:hover {
+  scrollbar-color: #888 #222; /* Couleur de la barre de défilement au survol et couleur de fond */
+}

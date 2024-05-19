@@ -1,5 +1,85 @@
-html { overflow-y: hidden; }
-main { overflow-y: visible }
+html {
+  overflow-y: hidden;
+  overflow-x: hidden;
+
+  --bg-color: #121212;
+  --container-color: #242424;
+}
+main {
+  overflow-y: visible;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 10px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Police d'écriture moderne */
+  color: #e4e4e4;
+  background-color: var(--bg-color);
+}
+
+.header {
+  justify-content: space-between;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: var(--container-color);
+  color: white;
+  display: flex;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 8px;
+  margin-bottom: 13px;
+}
+
+.header-left,
+.header-center {
+  display: flex;
+  align-items: center;
+}
+
+.header-left i {
+  font-size: 20px;
+  margin-right: 10px;
+  text-decoration: none;
+}
+
+.header-center {
+  justify-content: center;
+}
+
+.header-right a {
+  font-size: 20px;
+  text-decoration: none;
+  margin-left: 10px;
+}
+
+.footer {
+  background-color: var(--bg-color);
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+}
+
+.header a,
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+.header a:hover,
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.header .fa-github,
+.footer .fa-github {
+  margin-right: 5px;
+}
 
 #chart-container {
   margin: 0;
@@ -8,16 +88,18 @@ main { overflow-y: visible }
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  background: #242424;
+  background: var(--container-color);
   justify-content: center;
   align-items: center;
 }
 
-#menu-container{
-  background-color: #1f1f1f;
+#menu-container {
+  background-color: var(--container-color);
   overflow: auto;
-  margin-top: 5px;
+  margin-top: 10px;
   padding: 10px;
+  padding-left: 25px;
+  padding-right: 25px;
 }
 
 #tooltip {
@@ -45,7 +127,7 @@ main { overflow-y: visible }
   border-radius: 5px;
   top: 50%;
   right: 25px;
-  width: 200px;
+  width: 250px;
   background-color: #191919b5;
   z-index: 9999; /* Assure que la div est au-dessus de tous les autres éléments */
 
@@ -56,12 +138,6 @@ main { overflow-y: visible }
 
 #toolbox > * {
   margin-bottom: 5px;
-}
-
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Police d'écriture moderne */
-  color: #e4e4e4;
-  background-color: black;
 }
 
 /* Styles de base */
@@ -90,14 +166,4 @@ body {
 .modern-button:active {
   background-color: #16724c; /* Nouvelle couleur de fond enfoncée */
   color: white; /* Nouvelle couleur du texte enfoncé */
-}
-
-.color1{
-  background-color:red;
-}
-.color2{
-  background-color:pink;
-}
-.color3{
-  background-color:blue;
 }
