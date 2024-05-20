@@ -15,6 +15,13 @@ const dataPeriodes = [
 const frise = new FCFrise();
 
 const loadingIcons = document.getElementsByClassName("loading-icon");
+const menuContainer = document.getElementById("menu-container");
+
+const menuDate = document.getElementById("menu-date");
+const menuEvent = document.getElementById("menu-event");
+const menuPeriod = document.getElementById("menu-period");
+menuPeriod.classList.toggle("fade");
+menuDate.classList.toggle("fade");
 
 document
   .querySelector("#txtSizePeriod")
@@ -29,9 +36,25 @@ document
   .querySelector("#maxCharPerLigne")
   .addEventListener("input", debounce(changeCharPerLigne, 500));
 
+document
+  .querySelector("#dateParameter")
+  .addEventListener("click", afficherDateParameter);
+document
+  .querySelector("#periodParameter")
+  .addEventListener("click", afficherPeriodParameter);
+document
+  .querySelector("#eventParameter")
+  .addEventListener("click", afficherEventParameter);
+document.querySelector("#resetZoom").addEventListener("click", resetZoom);
+document.querySelector("#btnAddDate").addEventListener("click", click1234);
+
 onwheel = function (event) {
   frise.callOnWheel(event);
 };
+
+function resetZoom() {
+  alert("unimplemented method");
+}
 
 function changeSizePeriod(event) {
   frise.fontSizePeriod = event.target.value + "px";
@@ -53,15 +76,21 @@ function changeCharPerLigne(event) {
   frise.actualiserFrise();
 }
 
-// Fonction pour ajouter un événement
-function ajouterDate() {
-  console.log("ntm");
-  FCDate.addDate(frise);
+//#region SUBMENU
+function afficherDateParameter() {
+  alert("Date Parameter");
 }
+function afficherEventParameter() {
+  alert("Date Parameter");
+}
+function afficherPeriodParameter() {
+  alert("Date Parameter");
+}
+//#endregion
 
-function btnAddDate() {
-  var titre = document.getElementById("newDateTitre");
-  var date = document.getElementById("newDateDate");
+function click1234() {
+  var titre = document.getElementById("newDateTitre").value;
+  var date = document.getElementById("newDateDate").value;
 
   FCDate.addDate(frise, titre, date);
 }
@@ -108,10 +137,7 @@ var isLoading = false;
  */
 function displayLoadingIcones(shouldDisplay) {
   if (isLoading == shouldDisplay) return;
-  console.log("isLoading : " + shouldDisplay);
   isLoading = shouldDisplay;
-
-  console.log(loadingIcons);
 
   for (var i = 0; i < loadingIcons.length; i++) {
     // Si le paramètre afficher est vrai, ajouter la classe pour afficher

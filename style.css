@@ -10,6 +10,11 @@ main {
   overflow-x: hidden;
 }
 
+button svg {
+  width: 20px;
+  margin-right: 5px;
+}
+
 h3 {
   margin-top: 0px;
   margin-bottom: 10px !important;

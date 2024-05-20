@@ -43,19 +43,33 @@
   </div>
 
   <div id="menu-container">
-    <h3>
-      <i class="fa-solid fa-calendar-days"></i>
-      Ajouter une date
-    </h3>
-    <div>
-      <input type="text" id="newDateTitre"> : Titre</input>
+    <div id="menu-date" class="menu-fade">
+      <h3>
+        <i class="fa-solid fa-calendar-days"></i>
+        Ajouter une date
+      </h3>
+      <div>
+        <input type="text" id="newDateTitre"> : Titre</input>
+      </div>
+      <div>
+        <input type="date" id="newDateDate"> : Date</input>
+      </div>
+      <button id="btnAddDate" class="modern-button">
+        Ajouter la date
+      </button>
     </div>
-    <div>
-      <input type="date" id="newDateDate"> : Date</input>
+    <div id="menu-period" class="menu-fade">
+      <h3>
+        <i class="fa-solid fa-calendar-days"></i>
+        Ajouter une period
+      </h3>
     </div>
-    <button class="modern-button" onclick="btnAddDate()">
-      Ajouter la date
-    </button>
+    <div id="menu-event" class="menu-fade">
+      <h3>
+        <i class="fa-solid fa-calendar-days"></i>
+        Ajouter une event
+      </h3>
+    </div>
   </div>
 
   <div id="toolbox" class="draggable">
@@ -65,16 +79,22 @@
     <h3>
       <i class="fa-solid fa-screwdriver-wrench" style="margin-right: 5px;"></i> Toolbox :
     </h3>
-    <button class="modern-button" id="btnAddDateold" onclick="ajouterDate()">
-      <i class="fa-solid fa-calendar-days"></i>
-      Ajouter une date
-    </button>
-    <button class="modern-button">
+    <button class="modern-button" id="periodParameter">
       <i class="fa-solid fa-timeline"></i>
-      Ajouter un evenement
+      Periode options
     </button>
 
-    <button class="modern-button" onclick="resetZoom()">
+    <button class="modern-button" id="dateParameter">
+      <i class="fa-solid fa-calendar-days"></i>
+      Date options
+    </button>
+
+    <button class="modern-button" id="eventParameter">
+      <i class="fa-solid fa-timeline"></i>
+      Event options
+    </button>
+
+    <button class="modern-button" id="resetZoom">
       <i class="fa-solid fa-magnifying-glass"></i>
       Reset du zoom
     </button>
@@ -82,33 +102,33 @@
     <label>
       <i class="fa-solid fa-font"></i>
       Font size pour les périodes :
-      <input type="range" id="txtSizePeriod" min="1" max="99" value="15"
+      <input type="range" id="txtSizePeriod" min="1" max="50" value="15"
         oninput="this.nextElementSibling.value = this.value" />
-      <output></output>
+      <output>15</output>
     </label>
 
     <label>
       <i class="fa-solid fa-font"></i>
       Font size pour les events :
-      <input type="range" id="txtSizeEvent" min="1" max="99" value="15"
+      <input type="range" id="txtSizeEvent" min="1" max="50" value="15"
         oninput="this.nextElementSibling.value = this.value" />
-      <output></output>
+      <output>15</output>
     </label>
 
     <label>
       <i class="fa-solid fa-font"></i>
       Font size pour les dates :
-      <input type="range" id="txtSizeDate" min="1" max="99" value="15"
+      <input type="range" id="txtSizeDate" min="1" max="50" value="15"
         oninput="this.nextElementSibling.value = this.value" />
-      <output></output>
+      <output>15</output>
     </label>
 
     <label>
       <i class="fa-solid fa-bars"></i>
-      Maximum de nombre de lettre pour chaque ligne :
+      Maximum de lettre pour chaque ligne :
       <input id="maxCharPerLigne" type="range" min="1" max="60" value="15"
         oninput="this.nextElementSibling.value = this.value" />
-      <output></output>
+      <output>15</output>
     </label>
   </div>
 
