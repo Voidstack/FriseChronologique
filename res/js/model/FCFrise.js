@@ -2,30 +2,15 @@ import { UtilsArray } from "../utils/UtilsArray.js";
 import { UtilsDate } from "../utils/UtilsDate.js";
 import { UtilsString } from "../utils/UtilsString.js";
 import { VUEDate } from "../vue/VUEDate.js";
+import { FCDate } from "./FCDate.js";
+import { FCEvent } from "./FCEvent.js";
+import { FCPeriode } from "./FCPeriode.js";
 
 export class FCFrise {
   constructor() {
-    this.dataPeriodes = [
-      { dateDebut: "0000-00-00", title: "Gaule romaine", color: "#ffc56e" },
-      { dateDebut: "0500-00-00", title: "Mérovingiens", color: "#6babdb" },
-      { dateDebut: "0750-00-00", title: "Carolingiens", color: "#3f3f3f" },
-      { dateDebut: "0990-00-00", title: "Capétiens", color: "#ffc56e" },
-      {
-        dateDebut: "1790-00-00",
-        title: "Période contemporaine",
-        color: "#6babdb",
-      },
-    ];
-    this.dataEvent = [
-      { dateDebut: "0750-01-01", dateFin: "1100-05-10", title: "Bonjour !" },
-      { dateDebut: "0900-00-00", dateFin: "1500-05-10", title: "Pas super !" },
-      { dateDebut: "2008-01-01", dateFin: "2010-05-10", title: "Bonjour2 !" },
-    ];
-    this.dataDate = [
-      { dateDebut: "0000-00-00", title: "Événement 1" },
-      { dateDebut: "0400-00-00", title: "Invasion Barbare" },
-      { dateDebut: "2018-03-20", title: "Événement 4" },
-    ];
+    this.dataPeriodes = FCPeriode.defaultPeriodes;
+    this.dataEvent = FCEvent.defaultEvents;
+    this.dataDate = FCDate.defaultDates;
 
     this.zoomFactor = 50;
 
@@ -61,8 +46,8 @@ export class FCFrise {
     // Échelles axe X
     this.xScale = d3
       .scaleTime()
-      .domain(d3.extent(this.dataDate, (d) => d.dateDebut))
-      .range([this.margin.left, this.width - this.margin.right]);
+      .domain(d3.extent(this.dataDate, (d) => d.dateDebut)) // Ici on devrais définir la date min et max ([minDate, maxDate])
+      .range([this.margin.left, this.width - this.margin.right]); // ici c'est logique
 
     // Créez un élément tooltip
     this.tooltip = d3
@@ -71,7 +56,7 @@ export class FCFrise {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-    this.actualiserFrise();
+    this.redimensionner();
   }
 
   //#region FUNCTION
@@ -97,7 +82,18 @@ export class FCFrise {
     // Création de l'élément SVG
 
     // Échelles axe X
-    this.xScale.range([this.margin.left, this.width - this.margin.right]);
+    // ici on definit la date min et max
+    // puis la range margin left&right
+    this.xScaleDate = d3
+      .scaleTime()
+      .domain(
+        d3.extent([
+          FCPeriode.getFirstDate(this.dataPeriodes),
+          FCPeriode.getLastDate(this.dataPeriodes),
+        ])
+      )
+      .range([this.margin.left, this.width - this.margin.right]);
+
     this.actualiserFrise();
   }
 
@@ -127,11 +123,6 @@ export class FCFrise {
 
     this.svg.attr("width", this.width + 50); // + 50 pour permettre l'afficher la flèche qui est hors du cadre de la frise
 
-    this.xScale = d3
-      .scaleTime()
-      .domain(d3.extent(this.dataDate, (d) => d.dateDebut))
-      .range([this.margin.left, this.width - this.margin.right]);
-
     // Ajout des barres pour représenter les dates
     this.svg
       .selectAll("date")
@@ -150,10 +141,7 @@ export class FCFrise {
         this.onHoverOutEvent(event, d);
       });
 
-    let lastDate = UtilsDate.getLastDate(
-      this.dataDate.map((item) => new Date(item.dateDebut))
-    );
-
+    //#region PERIOD
     // Ajout des lignes pour ajouter les périodes
     this.svg
       .selectAll("period")
@@ -162,9 +150,9 @@ export class FCFrise {
       .append("line")
       .style("stroke", (d) => d.color)
       .style("stroke-width", 50)
-      .attr("x1", (d) => this.xScale(this.parseDate(d.dateDebut)))
+      .attr("x1", (d) => this.xScaleDate(d.dateDebut))
       .attr("y1", this.heightPeriod)
-      .attr("x2", this.xScale(lastDate))
+      .attr("x2", (d) => this.xScaleDate(d.dateFin))
       .attr("y2", this.heightPeriod)
       .on("mouseover", (event, d) => {
         this.onHoverInEvent(event, d);
@@ -172,7 +160,7 @@ export class FCFrise {
       .on("mouseout", (event, d) => {
         this.onHoverOutEvent(event, d);
       })
-      .on("click", (event, d) => {
+      .on("click", (_, d) => {
         console.log(d);
         UtilsArray.removeElement(this.dataPeriodes, d);
         this.actualiserFrise();
@@ -192,21 +180,9 @@ export class FCFrise {
         .attr("dominant-baseline", "middle") // Baseline centrée (vertical)
         .attr("class", "bonjour")
         .attr("x", () => {
-          let dateDeFinDeLaPeriode = UtilsDate.dateSuivanteLaPlusProche(
-            period.dateDebut,
-            this.dataPeriodes.map((obj) => obj.dateDebut)
-          ); // On récupère la date de debut de la période suivante ou null si pas de période suivante
-          if (dateDeFinDeLaPeriode == null) {
-            return (
-              (this.xScale(this.parseDate(period.dateDebut)) + this.width) / 2
-            );
-          } else {
-            return (
-              (this.xScale(this.parseDate(period.dateDebut)) +
-                this.xScale(this.parseDate(dateDeFinDeLaPeriode))) /
-              2
-            );
-          }
+          var xMin = this.xScaleDate(period.dateDebut);
+          var xMax = this.xScaleDate(period.dateFin);
+          return (xMin + xMax) / 2;
         })
         .attr(
           "y",
@@ -217,6 +193,7 @@ export class FCFrise {
         .style("font-size", this.fontSizePeriod)
         .text((d) => d);
     });
+    //#endregion
 
     // Ajout des lignes pour représenter les evenements
     this.svg

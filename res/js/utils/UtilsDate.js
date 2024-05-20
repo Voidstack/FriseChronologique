@@ -29,4 +29,25 @@ export class UtilsDate {
     }
     return datePlusProche;
   }
+
+  /**
+   * Transforme une date en chaine de caractère, enfin je crois.
+   * @param {Date} date
+   * @returns
+   */
+  static formatDate(date) {
+    if (!(date instanceof Date)) {
+      throw new Error("L'argument doit être un objet Date");
+    }
+
+    var year = date.getFullYear();
+    var month = String(date.getMonth() + 1).padStart(2, "0"); // Les mois sont de 0 à 11
+    var day = String(date.getDate()).padStart(2, "0");
+
+    var result = `${year}-${month}-${day}`;
+
+    console.log(result);
+
+    return result;
+  }
 }
