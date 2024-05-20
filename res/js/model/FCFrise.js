@@ -1,6 +1,7 @@
 import { UtilsArray } from "../utils/UtilsArray.js";
 import { UtilsDate } from "../utils/UtilsDate.js";
 import { UtilsString } from "../utils/UtilsString.js";
+import { VUEDate } from "../vue/VUEDate.js";
 
 export class FCFrise {
   constructor() {

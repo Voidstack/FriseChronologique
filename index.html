@@ -42,8 +42,37 @@
     </div>
   </div>
 
+  <!-- DIV QUI CONTIENT LES SOUS-MENU -->
   <div id="menu-container">
-    <div id="menu-date" class="menu-fade">
+    <!-- === TUTORIEL === -->
+    <div id="menu-tutoriel" class="submenu">
+      <h3>
+        <i class="fa-solid fa-flag-checkered"></i>
+        Tutoriel
+      </h3>
+      <div>
+        <span>
+          <i class="fa-solid fa-computer-mouse"></i>
+          <i class="fa-solid fa-angles-up"></i>
+          Zoom de la frise chronologique
+        </span>
+      </div>
+      <div>
+        <span>
+          <i class="fa-solid fa-computer-mouse"></i>
+          <i class="fa-solid fa-angles-down"></i>
+          Dézoom de la frise chronologique
+        </span>
+      </div>
+      <div>
+        <span>
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+          Utiliser la Toolbox pour sélectionner le menu qui vous intéresse
+        </span>
+      </div>
+    </div>
+    <!-- === DATE === -->
+    <div id="menu-date" class="submenu">
       <h3>
         <i class="fa-solid fa-calendar-days"></i>
         Ajouter une date
@@ -57,18 +86,53 @@
       <button id="btnAddDate" class="modern-button">
         Ajouter la date
       </button>
+      <div>
+        <label>
+          <i class="fa-solid fa-font"></i>
+          Font size pour les dates :
+          <input type="range" id="txtSizeDate" min="1" max="50" value="15"
+            oninput="this.nextElementSibling.value = this.value" />
+          <output>15</output>
+        </label>
+      </div>
     </div>
-    <div id="menu-period" class="menu-fade">
+    <!-- === PERIOD === -->
+    <div id="menu-period" class="submenu">
       <h3>
         <i class="fa-solid fa-calendar-days"></i>
         Ajouter une period
       </h3>
+      <div>
+        <label>
+          <i class="fa-solid fa-bars"></i>
+          Maximum de lettre pour chaque ligne :
+          <input id="maxCharPerLigne" type="range" min="1" max="60" value="15"
+            oninput="this.nextElementSibling.value = this.value" />
+          <output>15</output>
+        </label>
+      </div>
+
+      <label>
+        <i class="fa-solid fa-font"></i>
+        Font size pour les périodes :
+        <input type="range" id="txtSizePeriod" min="1" max="50" value="15"
+          oninput="this.nextElementSibling.value = this.value" />
+        <output>15</output>
+      </label>
     </div>
-    <div id="menu-event" class="menu-fade">
+    <!-- === EVENT === -->
+    <div id="menu-event" class="submenu">
       <h3>
         <i class="fa-solid fa-calendar-days"></i>
         Ajouter une event
       </h3>
+      <label>
+        <i class="fa-solid fa-font"></i>
+        Font size pour les events :
+        <input type="range" id="txtSizeEvent" min="1" max="50" value="15"
+          oninput="this.nextElementSibling.value = this.value" />
+        <output>15</output>
+      </label>
     </div>
   </div>
 
@@ -79,9 +143,13 @@
     <h3>
       <i class="fa-solid fa-screwdriver-wrench" style="margin-right: 5px;"></i> Toolbox :
     </h3>
+    <button class="modern-button" id="btnTutoriel">
+      <i class="fa-solid fa-flag-checkered"></i>
+      Tutoriel
+    </button>
     <button class="modern-button" id="periodParameter">
       <i class="fa-solid fa-timeline"></i>
-      Periode options
+      Period options
     </button>
 
     <button class="modern-button" id="dateParameter">
@@ -98,38 +166,6 @@
       <i class="fa-solid fa-magnifying-glass"></i>
       Reset du zoom
     </button>
-
-    <label>
-      <i class="fa-solid fa-font"></i>
-      Font size pour les périodes :
-      <input type="range" id="txtSizePeriod" min="1" max="50" value="15"
-        oninput="this.nextElementSibling.value = this.value" />
-      <output>15</output>
-    </label>
-
-    <label>
-      <i class="fa-solid fa-font"></i>
-      Font size pour les events :
-      <input type="range" id="txtSizeEvent" min="1" max="50" value="15"
-        oninput="this.nextElementSibling.value = this.value" />
-      <output>15</output>
-    </label>
-
-    <label>
-      <i class="fa-solid fa-font"></i>
-      Font size pour les dates :
-      <input type="range" id="txtSizeDate" min="1" max="50" value="15"
-        oninput="this.nextElementSibling.value = this.value" />
-      <output>15</output>
-    </label>
-
-    <label>
-      <i class="fa-solid fa-bars"></i>
-      Maximum de lettre pour chaque ligne :
-      <input id="maxCharPerLigne" type="range" min="1" max="60" value="15"
-        oninput="this.nextElementSibling.value = this.value" />
-      <output>15</output>
-    </label>
   </div>
 
   <div id="tooltip">

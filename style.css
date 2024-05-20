@@ -55,6 +55,15 @@ body {
   text-decoration: none;
 }
 
+.submenu h3 {
+  margin: 10px !important;
+  margin-bottom: 20px !important;
+}
+
+.submenu div {
+  margin-bottom: 10px;
+}
+
 .header-center {
   justify-content: center;
 }
@@ -135,8 +144,8 @@ body {
   position: absolute;
   border-radius: 5px;
   top: 50%;
+  width: fit-content;
   right: 25px;
-  width: 250px;
   background-color: #191919b5;
   z-index: 9999; /* Assure que la div est au-dessus de tous les autres éléments */
 

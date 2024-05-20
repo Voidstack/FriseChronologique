@@ -17,12 +17,6 @@ const frise = new FCFrise();
 const loadingIcons = document.getElementsByClassName("loading-icon");
 const menuContainer = document.getElementById("menu-container");
 
-const menuDate = document.getElementById("menu-date");
-const menuEvent = document.getElementById("menu-event");
-const menuPeriod = document.getElementById("menu-period");
-menuPeriod.classList.toggle("fade");
-menuDate.classList.toggle("fade");
-
 document
   .querySelector("#txtSizePeriod")
   .addEventListener("input", debounce(changeSizePeriod, 500));
@@ -36,15 +30,28 @@ document
   .querySelector("#maxCharPerLigne")
   .addEventListener("input", debounce(changeCharPerLigne, 500));
 
+//#region SUBMENU
+const menuDate = document.getElementById("menu-date");
+const menuEvent = document.getElementById("menu-event");
+const menuPeriod = document.getElementById("menu-period");
+const menuTutoriel = document.getElementById("menu-tutoriel");
+menuDate.style.display = "none";
+menuPeriod.style.display = "none";
+menuEvent.style.display = "none";
+document
+  .querySelector("#btnTutoriel")
+  .addEventListener("click", () => afficherSubMenu(menuTutoriel));
 document
   .querySelector("#dateParameter")
-  .addEventListener("click", afficherDateParameter);
+  .addEventListener("click", () => afficherSubMenu(menuDate));
 document
   .querySelector("#periodParameter")
-  .addEventListener("click", afficherPeriodParameter);
+  .addEventListener("click", () => afficherSubMenu(menuPeriod));
 document
   .querySelector("#eventParameter")
-  .addEventListener("click", afficherEventParameter);
+  .addEventListener("click", () => afficherSubMenu(menuEvent));
+//#endregion
+
 document.querySelector("#resetZoom").addEventListener("click", resetZoom);
 document.querySelector("#btnAddDate").addEventListener("click", click1234);
 
@@ -76,17 +83,13 @@ function changeCharPerLigne(event) {
   frise.actualiserFrise();
 }
 
-//#region SUBMENU
-function afficherDateParameter() {
-  alert("Date Parameter");
+function afficherSubMenu(submenu) {
+  menuDate.style.display = "none";
+  menuEvent.style.display = "none";
+  menuPeriod.style.display = "none";
+  menuTutoriel.style.display = "none";
+  submenu.style.display = "block";
 }
-function afficherEventParameter() {
-  alert("Date Parameter");
-}
-function afficherPeriodParameter() {
-  alert("Date Parameter");
-}
-//#endregion
 
 function click1234() {
   var titre = document.getElementById("newDateTitre").value;
