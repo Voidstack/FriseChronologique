@@ -1,9 +1,10 @@
+import { UtilsDate } from "../utils/UtilsDate.js";
 import { FCFrise } from "./FCFrise.js";
 
 export class FCPeriode {
   static defaultPeriodes = [
     new FCPeriode(
-      new Date(0, 0, 0),
+      UtilsDate.ZERO,
       new Date(500, 0),
       "Gaule romaine",
       "#ffc56e"
@@ -23,7 +24,7 @@ export class FCPeriode {
     new FCPeriode(new Date(990, 0), new Date(1200, 0), "Capétiens", "#ffc56e"),
     new FCPeriode(
       new Date(1750, 0),
-      new Date(2024, 0),
+      new Date(),
       "Période contemporaine",
       "#ffc56e"
     ),
@@ -43,6 +44,11 @@ export class FCPeriode {
     this.color = color;
   }
 
+  /**
+   * Retourne la date la plus récente d'une list de Date.
+   * @param {Date} fcPeriodes 
+   * @returns 
+   */
   static getLastDate(fcPeriodes) {
     var dates = fcPeriodes.map((d) => d.dateFin);
     if (!Array.isArray(dates) || dates.length === 0) {
@@ -57,6 +63,11 @@ export class FCPeriode {
     return lastDate;
   }
 
+  /**
+   * Retourne la date la plus ancienne d'une list de Date.
+   * @param {Date} fcPeriodes 
+   * @returns 
+   */
   static getFirstDate(fcPeriodes) {
     var dates = fcPeriodes.map((d) => d.dateDebut);
     if (!Array.isArray(dates) || dates.length === 0) {
@@ -69,5 +80,29 @@ export class FCPeriode {
       }
     }
     return firstDate;
+  }
+
+  onHoverIn(event){
+    // Afficher le tooltip
+    const tooltip = document.querySelector("#tooltip");
+    tooltip.style.display = "block";
+
+    // Mettre à jour les informations du tooltip
+    document.getElementById("tooltip-date").innerText = UtilsDate.getString(this.dateDebut);
+    document.getElementById("tooltip-event").innerText = this.title;
+
+    // Positionner le tooltip par rapport à la position de la souris
+    tooltip.style.left = event.pageX + 10 + "px";
+    tooltip.style.top = event.pageY + 10 + "px";
+  }
+
+  onHoverOut(event){
+    // Masquer le tooltip lorsque la souris quitte l'élément
+    const tooltip = document.querySelector("#tooltip");
+    tooltip.style.display = "none";
+  }
+
+  onClick(event){
+    console.log("clicked");
   }
 }

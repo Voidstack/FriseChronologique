@@ -1,6 +1,25 @@
 export class UtilsDate {
+  static ZERO = new Date("0000-01-01T00:00:00Z");
+
+  /**
+   * Retourne un string au format DD-MM-AAAA.
+   * @param {Date} date 
+   * @returns 
+   */
+  static getString(date) {
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    day = day.toString().padStart(2, "0");
+    month = month.toString().padStart(2, "0");
+    year = year.toString().padStart(4, "0");
+
+    return `${day}/${month}/${year}`;
+  }
+
   // Retourne la dernière date d'une [] de dates
-  static getLastDate(dates) {
+  static getLastDate(dates) {    
     // Trier les dates dans l'ordre chronologique
     dates.sort((a, b) => a - b);
     // Récupérer la dernière date de la liste triée

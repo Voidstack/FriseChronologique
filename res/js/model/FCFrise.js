@@ -1,12 +1,11 @@
 import { UtilsArray } from "../utils/UtilsArray.js";
-import { UtilsDate } from "../utils/UtilsDate.js";
 import { UtilsString } from "../utils/UtilsString.js";
-import { VUEDate } from "../vue/VUEDate.js";
 import { FCDate } from "./FCDate.js";
 import { FCEvent } from "./FCEvent.js";
 import { FCPeriode } from "./FCPeriode.js";
 
 export class FCFrise {
+  //#region CONSTRUCTOR
   constructor() {
     this.dataPeriodes = FCPeriode.defaultPeriodes;
     this.dataEvent = FCEvent.defaultEvents;
@@ -16,7 +15,7 @@ export class FCFrise {
 
     this.heightDate = 40;
     this.heightPeriod = 100;
-    this.heightEvent = 150;
+    this.heightEvent = 170;
 
     this.fontSizePeriod = "24px";
     this.fontSizeDate = "24px";
@@ -43,6 +42,12 @@ export class FCFrise {
       d.dateDebut = this.parseDate(d.dateDebut);
     });
 
+    this.lineGenerator = d3
+      .line()
+      .x((d) => d.x)
+      .y((d) => d.y)
+      .curve(d3.curveLinear);
+
     // Échelles axe X
     this.xScale = d3
       .scaleTime()
@@ -58,6 +63,7 @@ export class FCFrise {
 
     this.redimensionner();
   }
+  //#endregion
 
   //#region FUNCTION
   callOnWheel(event) {
@@ -97,51 +103,30 @@ export class FCFrise {
     this.actualiserFrise();
   }
 
-  onHoverInEvent(event, d) {
-    // Afficher le tooltip
-    const tooltip = document.querySelector("#tooltip");
-    tooltip.style.display = "block";
-
-    // Mettre à jour les informations du tooltip
-    document.getElementById("tooltip-date").innerText = d.dateDebut;
-    document.getElementById("tooltip-event").innerText = d.event;
-
-    // Positionner le tooltip par rapport à la position de la souris
-    tooltip.style.left = event.pageX + 10 + "px";
-    tooltip.style.top = event.pageY + 10 + "px";
-  }
-
-  onHoverOutEvent(event, d) {
-    // Masquer le tooltip lorsque la souris quitte l'élément
-    const tooltip = document.querySelector("#tooltip");
-    tooltip.style.display = "none";
-  }
-
   // Fonction pour actualiser la frise chronologique avec les nouvelles données
   actualiserFrise() {
     this.svg.selectAll("*").remove();
 
     this.svg.attr("width", this.width + 50); // + 50 pour permettre l'afficher la flèche qui est hors du cadre de la frise
 
+    //#region === DATE ===
     // Ajout des barres pour représenter les dates
     this.svg
       .selectAll("date")
       .data(this.dataDate)
       .enter()
       .append("rect")
-      .attr("x", (d) => this.xScale(d.dateDebut))
+      .attr("x", (d) => this.xScaleDate(d.date))
       .attr("y", this.heightDate)
       .attr("width", 10)
       .attr("height", 10)
       .attr("fill", "#ff6472")
-      .on("mouseover", (event, d) => {
-        this.onHoverInEvent(event, d);
-      })
-      .on("mouseout", (event, d) => {
-        this.onHoverOutEvent(event, d);
-      });
+      .on("click", (event, d) => d.onClick(event))
+      .on("mouseover", (event, d) => d.onHoverIn(event))
+      .on("mouseout", (event, d) => d.onHoverOut(event));
+    //#endregion === DATE ===
 
-    //#region PERIOD
+    //#region === PERIOD ==
     // Ajout des lignes pour ajouter les périodes
     this.svg
       .selectAll("period")
@@ -154,17 +139,9 @@ export class FCFrise {
       .attr("y1", this.heightPeriod)
       .attr("x2", (d) => this.xScaleDate(d.dateFin))
       .attr("y2", this.heightPeriod)
-      .on("mouseover", (event, d) => {
-        this.onHoverInEvent(event, d);
-      })
-      .on("mouseout", (event, d) => {
-        this.onHoverOutEvent(event, d);
-      })
-      .on("click", (_, d) => {
-        console.log(d);
-        UtilsArray.removeElement(this.dataPeriodes, d);
-        this.actualiserFrise();
-      });
+      .on("click", (event, d) => d.onClick(event))
+      .on("mouseover", (event, d) => d.onHoverIn(event))
+      .on("mouseout", (event, d) => d.onHoverOut(event));
 
     this.dessinerLaFleche();
 
@@ -191,31 +168,46 @@ export class FCFrise {
         .style("font-family", "Roboto, Noto Sans, system-ui")
         .style("fill", "black")
         .style("font-size", this.fontSizePeriod)
+        .style("pointer-events", "none")
         .text((d) => d);
     });
     //#endregion
 
-    // Ajout des lignes pour représenter les evenements
-    this.svg
-      .selectAll("event")
-      .data(this.dataEvent)
-      .enter()
-      .append("line")
-      .style("stroke", "lightgreen")
-      .style("stroke-width", 5)
-      // .style("marker-start", "url(#arrowhead)")
-      .style("marker-end", "url(#arrowhead)")
-      .attr("x1", (d) => this.xScale(this.parseDate(d.dateDebut)))
-      .attr("y1", this.heightEvent)
-      .attr("x2", (d) => this.xScale(this.parseDate(d.dateFin)))
-      .attr("y2", this.heightEvent);
+    // #region === EVENT ===
+    
+    // Trier les événements par date de début
+    this.dataEvent.sort((a, b) => a.start - b.start);
+
+    let levels = [];
+
+    // Parcourir chaque événement
+    this.dataEvent.forEach((event, index) => {
+        // Trouver le premier niveau libre
+        let level = event.findFirstFreeLevel(levels);
+
+        // Ajouter l'événement au niveau trouvé
+        if (!levels[level]) {
+          levels[level] = [];
+      }
+      levels[level].push(event);
+
+      let yOffset = level * 25; // Ajustez selon votre besoin
+      
+      let points = [
+        { x: this.xScaleDate(event.start), y: yOffset + this.heightEvent },
+        { x: this.xScaleDate(event.end), y: yOffset + this.heightEvent }
+      ];
+
+      let pathData = this.lineGenerator(points);
+      this.dessinerEventLigne(event, pathData);
+    });
+    //#endregion
 
     // Définition de la pointe (flèche)
     var arrowSize = 4; // Taille de la pointe de flèche
     var arrowPath = `M 0 ${arrowSize / 2} L ${arrowSize / 2} 0 L ${arrowSize} ${
       arrowSize / 2
     } L ${arrowSize / 2} ${arrowSize} Z`; // // Path de la pointe de flèche (un losange)
-
     this.svg
       .append("defs")
       .append("marker")
@@ -226,34 +218,49 @@ export class FCFrise {
       .attr("markerHeight", arrowSize)
       .attr("orient", "auto")
       .append("path")
+      .style("pointer-events", "none")
       .attr("d", arrowPath) // Forme de la pointe en losange
       .attr("fill", "#ff6372"); // Changer la couleur de la flèche en bleu
 
-    // Ajouter les points au graphique
-    this.svg
-      .selectAll(".point")
-      .data(this.dataEvent)
-      .enter()
-      .append("circle")
-      .attr("class", "point")
-      .attr("cx", (d) => this.xScale(this.parseDate(d.dateDebut)))
-      .attr("cy", (d) => this.heightEvent)
-      .attr("r", 5) // Rayon des points
-      .style("fill", "#66ace1");
+    //#endregion === EVENT ===
 
     // Ajout des axes
     this.svg
       .append("g")
       .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
-      .call(d3.axisBottom(this.xScale));
+      .call(d3.axisBottom(this.xScaleDate));
+  }  
+
+  /**
+   * Affiche un event
+   * @param {FCEvent} event
+   */
+  dessinerEventLigne(fcevent, path) {
+    this.svg
+      .append("path")
+      .attr("d", path)
+      .style("stroke", "lightgreen")
+      .style("stroke-width", 5)
+      // .style("marker-start", "url(#arrowhead)")
+      .style("marker-end", "url(#arrowhead)")
+      .style("marker-start", "url(#arrowhead")
+      .on("click", (event) => fcevent.onClick(event))
+      .on("mouseover", (event) => fcevent.onHoverIn(event))
+      .on("mouseout", (event) => fcevent.onHoverOut(event));
+
+    /*this.svg.append("path")
+    .attr("d", pathData)
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr("stroke-width", 2)
+    .attr("marker-start", "url(#arrowhead")
+    .attr("marker-end", "url(#arrowhead)");*/
   }
 
   dessinerLaFleche() {
-    let lastDate = UtilsDate.getLastDate(
-      this.dataDate.map((item) => new Date(item.dateDebut))
-    );
+    let lastDate = FCPeriode.getLastDate(this.dataPeriodes);
 
-    var x = this.xScale(lastDate);
+    var x = this.xScaleDate(lastDate);
     var y = this.heightPeriod;
 
     // Définir les coordonnées des sommets du triangle

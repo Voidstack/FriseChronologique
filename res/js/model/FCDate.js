@@ -1,8 +1,9 @@
+import { UtilsDate } from "../utils/UtilsDate.js";
 import { FCFrise } from "./FCFrise.js";
 
 export class FCDate {
   static defaultDates = [
-    new FCDate(new Date(0, 0, 0), "Evenement 1"),
+    new FCDate(UtilsDate.ZERO, "Evenement 1"),
     new FCDate(new Date(400, 0, 0), "Evenemnt2"),
     new FCDate(new Date(2018, 3, 20), "Evenement 3"),
   ];
@@ -79,5 +80,29 @@ export class FCDate {
     } else {
       alert("Les informations saisies ne sont pas valides.");
     }
+  }
+
+  onHoverIn(event){
+    // Afficher le tooltip
+    const tooltip = document.querySelector("#tooltip");
+    tooltip.style.display = "block";
+
+    // Mettre à jour les informations du tooltip
+    document.getElementById("tooltip-date").innerText = UtilsDate.getString(this.date);
+    document.getElementById("tooltip-event").innerText = this.title;
+
+    // Positionner le tooltip par rapport à la position de la souris
+    tooltip.style.left = event.pageX + 10 + "px";
+    tooltip.style.top = event.pageY + 10 + "px";
+  }
+
+  onHoverOut(event){
+    // Masquer le tooltip lorsque la souris quitte l'élément
+    const tooltip = document.querySelector("#tooltip");
+    tooltip.style.display = "none";
+  }
+
+  onClick(event){
+    console.log("clicked");
   }
 }

@@ -4,14 +4,6 @@ import { FCEvent } from "./model/FCEvent.js";
 import { FCFrise } from "./model/FCFrise.js";
 import { UtilsDate } from "./utils/UtilsDate.js";
 
-const dataPeriodes = [
-  new FCPeriode(new Date("0000-00-00"), "Gaule romaine", "#ffc56e"),
-  new FCPeriode(new Date("0500-00-00"), "Mérovingiens", "#6babdb"),
-  new FCPeriode(new Date("0750-00-00"), "Carolingiens", "#3f3f3f"),
-  new FCPeriode(new Date("0990-00-00"), "Capétiens", "#ffc56e"),
-  new FCPeriode(new Date("1790-00-00"), "Période contemporaine", "#6babdb"),
-];
-
 const frise = new FCFrise();
 
 const loadingIcons = document.getElementsByClassName("loading-icon");
@@ -53,7 +45,7 @@ document
 //#endregion
 
 document.querySelector("#resetZoom").addEventListener("click", resetZoom);
-document.querySelector("#btnAddDate").addEventListener("click", click1234);
+document.querySelector("#btnAddDate").addEventListener("click", addDate);
 
 onwheel = function (event) {
   frise.callOnWheel(event);
@@ -91,12 +83,25 @@ function afficherSubMenu(submenu) {
   submenu.style.display = "block";
 }
 
-function click1234() {
+//#region ADD
+function addDate() {
+  console.log("tetstest");
   var titre = document.getElementById("newDateTitre").value;
   var date = document.getElementById("newDateDate").value;
+  var newDate = new FCDate(date, titre);
 
-  FCDate.addDate(frise, titre, date);
+  frise.dataDate.push(newDate);
+  frise.actualiserFrise();
 }
+
+function addRegion(){
+
+}
+
+function addEvent(){
+
+}
+//#endregion
 
 window.addEventListener("resize", debounce(onResize));
 
