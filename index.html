@@ -7,12 +7,13 @@
   <title>Frise Chronologique avec D3.js</title>
   <link rel="icon" type="image/webp" href="/res/logo_trans_purple_144.png" />
   <link rel="stylesheet" type="text/css" href="style.css" />
+  <link rel="stylesheet" type="text/css" href="res/css/color-picker.css" />
   <link rel="stylesheet" type="text/css" href="res/css/loading.css" />
   <link rel="stylesheet" type="text/css" href="res/css/scrollbar.css" />
+  <link rel="stylesheet" type="text/css" href="res/css/device-manager.css" />
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/73275a3fef.js" crossorigin="anonymous"></script>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script type="module" src="res/js/main.js"></script>
+  <!--  <script src="https://kit.fontawesome.com/73275a3fef.js" crossorigin="anonymous"></script> -->
+  <script src="res/js/d3.v7.min.js"></script>
 </head>
 
 <body>
@@ -34,143 +35,243 @@
       </a>
     </div>
   </header>
+  <div class="desktop">
+    <!-- DIV QUI CONTIENT LA TIMELINE SOUS FORME DE SVG -->
+    <div id="chart-container" class="absolute-parent">
+      <div class="loading-icon">
+        <i class="fa-solid fa-sync fa-spin"></i>
+      </div>
+    </div>
 
-  <!-- DIV QUI CONTIENT LA TIMELINE SOUS FORME DE SVG -->
-  <div id="chart-container" class="absolute-parent">
-    <div class="loading-icon">
-      <i class="fa-solid fa-sync fa-spin"></i>
+    <!-- DIV QUI CONTIENT LES SOUS-MENU -->
+    <div id="menu-container">
+      <!-- === OPTIONS === -->
+      <div id="option-menu">
+        <button class="modern-button" id="btnTutoriel">
+          <i class="fa-solid fa-flag-checkered"></i>
+          Tutoriel
+        </button>
+        <a class="separator">|</a>
+        <button class="modern-button" id="dateParameter">
+          <i class="fa-solid fa-calendar-days"></i>
+          Date
+        </button>
+        <button class="modern-button" id="periodParameter">
+          <i class="fa-solid fa-timeline"></i>
+          Periode
+        </button>
+        <button class="modern-button" id="eventParameter">
+          <i class="fa-solid fa-timeline"></i>
+          Event
+        </button>
+        <a class="separator">|</a>
+        <button class="modern-button" id="otherParameter">
+          <i class="fa-solid fa-timeline"></i>
+          Other
+        </button>
+        <a class="separator">|</a>
+        <button class="modern-button" id="resetZoom">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          Reset du zoom
+        </button>
+      </div>
+      <!-- === TUTORIEL === -->
+      <div id="menu-tutoriel" class="submenu">
+        <div class="verticalBox">
+          <div class="horizontalBox">
+            <h3>
+              <i class="fa-solid fa-flag-checkered"></i>
+              Tutoriel
+            </h3>
+            <div>
+              <span>
+                <i class="fa-solid fa-computer-mouse"></i>
+                <i class="fa-solid fa-angles-up"></i>
+                Zoom de la frise chronologique
+              </span>
+            </div>
+            <div>
+              <span>
+                <i class="fa-solid fa-computer-mouse"></i>
+                <i class="fa-solid fa-angles-down"></i>
+                Dézoom de la frise chronologique
+              </span>
+            </div>
+            <div>
+              <span>
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                Utiliser la Toolbox pour sélectionner le menu qui vous intéresse
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- === DATE === -->
+      <div id="menu-date" class="submenu">
+        <div class="verticalBox">
+          <div class="horizontalBox">
+            <h3><i class="fa-solid fa-plus"></i>
+              Ajouter une date
+            </h3>
+            <div>
+              <input type="text" id="newDateTitre"> : Titre</input>
+            </div>
+            <div>
+              <input type="date" id="newDateDate"> : Date</input>
+            </div>
+            <div style="display: none;" id="errorAddDate">
+              La date est invalide
+            </div>
+            <button id="btnAddDate" class="modern-button">
+              Ajouter la date
+            </button>
+          </div>
+          <div class="horizontalBox">
+            <h3><i class="fa-solid fa-palette"></i>
+              Modifier le style
+            </h3>
+            <div>
+              <i class="fa-solid fa-font"></i>
+              Font size pour les dates :
+              <input type="range" id="txtSizeDate" min="1" max="50" value="15"
+                oninput="this.nextElementSibling.value = this.value" />
+              <output>15</output>
+            </div>
+            <div>
+              <i class="fa-solid fa-paintbrush"></i>
+              Couleur icone :
+              <input type="color" id="dateSymbolColor" value="#AA88EE">
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- === PERIOD === -->
+      <div id="menu-period" class="submenu">
+        <div class="verticalBox">
+          <div class="horizontalBox">
+            <h3><i class="fa-solid fa-plus"></i>
+              Ajouter une période
+            </h3>
+            <div>
+              <input type="text" id="newPeriodTitre"> : Titre</input>
+            </div>
+            <div>
+              <input type="date" id="newPeriodDateStart"> : Date début</input>
+            </div>
+            <div>
+              <input type="date" id="newPeriodDateEnd"> : Date fin</input>
+            </div>
+            <div>
+              <i class="fa-solid fa-paintbrush"></i>
+              Couleur de la période :
+              <input type="color" id="newPeriodColor" value="#AA88EE">
+            </div>
+            <div style="display: none;" id="errorAddPeriod">
+              La date de fin est inférieur à la date de début
+            </div>
+            <button id="btnAddPeriod" class="modern-button">
+              Ajouter la période
+            </button>
+          </div>
+          <div class="horizontalBox">
+            <h3><i class="fa-solid fa-palette"></i>
+              Modifier le style
+            </h3>
+            <div>
+              <i class="fa-solid fa-bars"></i>
+              Maximum de lettre pour chaque ligne :
+              <input id="maxCharPerLigne" type="range" min="1" max="60" value="15"
+                oninput="this.nextElementSibling.value = this.value" />
+              <output>15</output>
+            </div>
+
+            <div>
+              <i class="fa-solid fa-font"></i>
+              Font size pour les périodes :
+              <input type="range" id="txtSizePeriod" min="1" max="50" value="15"
+                oninput="this.nextElementSibling.value = this.value" />
+              <output>15</output>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- === EVENT === -->
+      <div id="menu-event" class="submenu">
+        <div class="verticalBox">
+          <div class="horizontalBox">
+            <h3><i class="fa-solid fa-plus"></i>
+              Ajouter un événement
+            </h3>
+            <div>
+              <input type="text" id="newEventTitre"> : Titre</input>
+            </div>
+            <div>
+              <input type="date" id="newEventDateStart"> : Date début</input>
+            </div>
+            <div>
+              <input type="date" id="newEventDateEnd"> : Date fin</input>
+            </div>
+            <div style="display: none;" id="errorAddEvent">
+              La date de fin est inférieur à la date de début
+            </div>
+            <button id="btnAddEvent" class="modern-button">
+              Ajouter la date
+            </button>
+          </div>
+          <div class="horizontalBox">
+            <h3><i class="fa-solid fa-palette"></i>
+              Modifier le style
+            </h3>
+            <div>
+              <i class="fa-solid fa-font"></i>
+              Font size pour les événements :
+              <input type="range" id="eventFontSize" min="1" max="50" value="12"
+                oninput="this.nextElementSibling.value = this.value" />
+              <output>12</output>
+            </div>
+            <div>
+              <input type="color" id="eventColorFont" value="#ffffff" />
+              <i class="fa-solid fa-paintbrush"></i>
+              Couleur du text
+            </div>
+            <div>
+              <input type="color" id="eventColorArrow" value="#AA88EE" />
+              <i class="fa-solid fa-paintbrush"></i>
+              Couleur de la flèche
+            </div>
+            <div>
+              <input type="color" id="eventColorLine" value="#ffffff" />
+              <i class="fa-solid fa-paintbrush"></i>
+              Couleur de la ligne
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- === OTHER === -->
+      <div id="menu-other" class="submenu">
+        <div class="verticalBox">
+          <div class="horizontalBox">
+            <h3><i class="fa-solid fa-plus"></i>
+              Autre
+            </h3>
+            <div>
+              <input id="otherDrawAxi" type="checkbox" value="true">
+            </div>
+            Afficher l'axe des dates
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-  <!-- DIV QUI CONTIENT LES SOUS-MENU -->
-  <div id="menu-container">
-    <!-- === TUTORIEL === -->
-    <div id="menu-tutoriel" class="submenu">
-      <h3>
-        <i class="fa-solid fa-flag-checkered"></i>
-        Tutoriel
-      </h3>
-      <div>
-        <span>
-          <i class="fa-solid fa-computer-mouse"></i>
-          <i class="fa-solid fa-angles-up"></i>
-          Zoom de la frise chronologique
-        </span>
-      </div>
-      <div>
-        <span>
-          <i class="fa-solid fa-computer-mouse"></i>
-          <i class="fa-solid fa-angles-down"></i>
-          Dézoom de la frise chronologique
-        </span>
-      </div>
-      <div>
-        <span>
-          <i class="fa-solid fa-screwdriver-wrench"></i>
-          Utiliser la Toolbox pour sélectionner le menu qui vous intéresse
-        </span>
-      </div>
-    </div>
-    <!-- === DATE === -->
-    <div id="menu-date" class="submenu">
-      <h3>
-        <i class="fa-solid fa-calendar-days"></i>
-        Ajouter une date
-      </h3>
-      <div>
-        <input type="text" id="newDateTitre"> : Titre</input>
-      </div>
-      <div>
-        <input type="date" id="newDateDate"> : Date</input>
-      </div>
-      <button id="btnAddDate" class="modern-button">
-        Ajouter la date
-      </button>
-      <div>
-        <label>
-          <i class="fa-solid fa-font"></i>
-          Font size pour les dates :
-          <input type="range" id="txtSizeDate" min="1" max="50" value="15"
-            oninput="this.nextElementSibling.value = this.value" />
-          <output>15</output>
-        </label>
-      </div>
-    </div>
-    <!-- === PERIOD === -->
-    <div id="menu-period" class="submenu">
-      <h3>
-        <i class="fa-solid fa-calendar-days"></i>
-        Ajouter une period
-      </h3>
-      <div>
-        <label>
-          <i class="fa-solid fa-bars"></i>
-          Maximum de lettre pour chaque ligne :
-          <input id="maxCharPerLigne" type="range" min="1" max="60" value="15"
-            oninput="this.nextElementSibling.value = this.value" />
-          <output>15</output>
-        </label>
-      </div>
-
-      <label>
-        <i class="fa-solid fa-font"></i>
-        Font size pour les périodes :
-        <input type="range" id="txtSizePeriod" min="1" max="50" value="15"
-          oninput="this.nextElementSibling.value = this.value" />
-        <output>15</output>
-      </label>
-    </div>
-    <!-- === EVENT === -->
-    <div id="menu-event" class="submenu">
-      <h3>
-        <i class="fa-solid fa-calendar-days"></i>
-        Ajouter une event
-      </h3>
-      <label>
-        <i class="fa-solid fa-font"></i>
-        Font size pour les events :
-        <input type="range" id="txtSizeEvent" min="1" max="50" value="15"
-          oninput="this.nextElementSibling.value = this.value" />
-        <output>15</output>
-      </label>
-    </div>
   </div>
 
-  <div id="toolbox" class="draggable">
-    <div class="loading-icon">
-      <i class="fa-solid fa-sync fa-spin"></i>
-    </div>
-    <h3>
-      <i class="fa-solid fa-screwdriver-wrench" style="margin-right: 5px;"></i> Toolbox :
-    </h3>
-    <button class="modern-button" id="btnTutoriel">
-      <i class="fa-solid fa-flag-checkered"></i>
-      Tutoriel
-    </button>
-    <button class="modern-button" id="periodParameter">
-      <i class="fa-solid fa-timeline"></i>
-      Period options
-    </button>
-
-    <button class="modern-button" id="dateParameter">
-      <i class="fa-solid fa-calendar-days"></i>
-      Date options
-    </button>
-
-    <button class="modern-button" id="eventParameter">
-      <i class="fa-solid fa-timeline"></i>
-      Event options
-    </button>
-
-    <button class="modern-button" id="resetZoom">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      Reset du zoom
-    </button>
+  <div class="mobile">
+    C'est cassé
   </div>
 
   <div id="tooltip">
-    <p><strong>Date:</strong> <span id="tooltip-date"></span></p>
-    <p><strong>Event:</strong> <span id="tooltip-event"></span></p>
+    <p><span id="tooltip-date"></span></p>
+    <p><span id="tooltip-event"></span></p>
   </div>
 
   <footer class="footer">
@@ -179,7 +280,8 @@
     </a>
   </footer>
 
-  <script src="res/js/draggable.js"></script>
+  <script type="module" src="res/js/main.js"></script>
+  <!--<script src="res/js/draggable.js"></script>-->
 </body>
 
 </html>

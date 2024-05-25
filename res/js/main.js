@@ -1,16 +1,8 @@
-import { FCPeriode } from "./model/FCPeriode.js";
 import { FCDate } from "./model/FCDate.js";
 import { FCEvent } from "./model/FCEvent.js";
 import { FCFrise } from "./model/FCFrise.js";
+import { FCPeriode } from "./model/FCPeriode.js";
 import { UtilsDate } from "./utils/UtilsDate.js";
-
-const dataPeriodes = [
-  new FCPeriode(new Date("0000-00-00"), "Gaule romaine", "#ffc56e"),
-  new FCPeriode(new Date("0500-00-00"), "Mérovingiens", "#6babdb"),
-  new FCPeriode(new Date("0750-00-00"), "Carolingiens", "#3f3f3f"),
-  new FCPeriode(new Date("0990-00-00"), "Capétiens", "#ffc56e"),
-  new FCPeriode(new Date("1790-00-00"), "Période contemporaine", "#6babdb"),
-];
 
 const frise = new FCFrise();
 
@@ -21,23 +13,68 @@ document
   .querySelector("#txtSizePeriod")
   .addEventListener("input", debounce(changeSizePeriod, 500));
 document
-  .querySelector("#txtSizeEvent")
-  .addEventListener("input", debounce(changeSizeEvent, 500));
-document
   .querySelector("#txtSizeDate")
   .addEventListener("input", debounce(changeSizeDate, 500));
 document
   .querySelector("#maxCharPerLigne")
   .addEventListener("input", debounce(changeCharPerLigne, 500));
 
+const eventFontSize = document.getElementById("eventFontSize");
+frise.eventFontSize = eventFontSize.value;
+eventFontSize.addEventListener("input", (event) => {
+  frise.eventFontSize = event.target.value;
+  frise.actualiserFrise();
+});
+
+const eventColorArrow = document.getElementById("eventColorArrow");
+frise.eventArrowColor = eventColorArrow.value;
+eventColorArrow.addEventListener("input", (event) => {
+  frise.eventArrowColor = event.target.value;
+  frise.actualiserFrise();
+});
+
+const eventColorLine = document.getElementById("eventColorLine");
+frise.eventLineColor = eventColorLine.value;
+eventColorLine.addEventListener("input", (event) => {
+  frise.eventLineColor = event.target.value;
+  frise.actualiserFrise();
+});
+
+const eventFontColor = document.getElementById("eventColorFont");
+frise.eventFontColor = eventFontColor.value;
+eventFontColor.addEventListener("input", (event) => {
+  frise.eventFontColor = event.target.value;
+  frise.actualiserFrise();
+});
+
+const dateSymbolColor = document.getElementById("dateSymbolColor");
+frise.dateSymbolColor = dateSymbolColor.value;
+dateSymbolColor.addEventListener("input", (event) => {
+  frise.dateSymbolColor = event.target.value;
+  frise.actualiserFrise();
+});
+
+// OTHER
+const otherDrawAxi = document.getElementById("otherDrawAxi");
+frise.shouldDrawAxi = otherDrawAxi.checked;
+console.log(otherDrawAxi.checked);
+otherDrawAxi.addEventListener("change", (event) => {
+  console.log(event.target.checked);
+  frise.shouldDrawAxi = event.target.checked;
+  frise.redimensionnerY();
+  frise.actualiserFrise();
+});
+
+frise.actualiserFrise();
+
 //#region SUBMENU
 const menuDate = document.getElementById("menu-date");
 const menuEvent = document.getElementById("menu-event");
 const menuPeriod = document.getElementById("menu-period");
 const menuTutoriel = document.getElementById("menu-tutoriel");
-menuDate.style.display = "none";
-menuPeriod.style.display = "none";
-menuEvent.style.display = "none";
+const menuOther = document.getElementById("menu-other");
+afficherSubMenu(menuTutoriel);
+
 document
   .querySelector("#btnTutoriel")
   .addEventListener("click", () => afficherSubMenu(menuTutoriel));
@@ -50,10 +87,17 @@ document
 document
   .querySelector("#eventParameter")
   .addEventListener("click", () => afficherSubMenu(menuEvent));
+document
+  .querySelector("#otherParameter")
+  .addEventListener("click", () => afficherSubMenu(menuOther));
 //#endregion
 
-document.querySelector("#resetZoom").addEventListener("click", resetZoom);
-document.querySelector("#btnAddDate").addEventListener("click", click1234);
+document
+  .querySelector("#resetZoom")
+  .addEventListener("click", () => frise.resetZoom());
+document.querySelector("#btnAddDate").addEventListener("click", addDate);
+document.querySelector("#btnAddPeriod").addEventListener("click", addPeriod);
+document.querySelector("#btnAddEvent").addEventListener("click", addEvent);
 
 onwheel = function (event) {
   frise.callOnWheel(event);
@@ -88,16 +132,68 @@ function afficherSubMenu(submenu) {
   menuEvent.style.display = "none";
   menuPeriod.style.display = "none";
   menuTutoriel.style.display = "none";
+  menuOther.style.display = "none";
   submenu.style.display = "block";
 }
 
-function click1234() {
+//#region ADD
+function addDate() {
+  console.log("addDate");
   var titre = document.getElementById("newDateTitre").value;
-  var date = document.getElementById("newDateDate").value;
+  var dateValue = document.getElementById("newDateDate").value;
+  var date = new FCDate(UtilsDate.inputValueToDate(dateValue), titre);
 
-  FCDate.addDate(frise, titre, date);
+  frise.dataDate.push(date);
+  console.log(frise.dataDate);
+  frise.actualiserFrise();
 }
 
+function addPeriod() {
+  console.log("addPeriod");
+  var titre = document.getElementById("newPeriodTitre").value;
+  var color = document.getElementById("newPeriodColor").value;
+  var dateStart = document.getElementById("newPeriodDateStart").value;
+  var dateEnd = document.getElementById("newPeriodDateEnd").value;
+
+  dateStart = UtilsDate.inputValueToDate(dateStart);
+  dateEnd = UtilsDate.inputValueToDate(dateEnd);
+
+  // Verif !
+  if (UtilsDate.checkIfIsBefore(dateStart, dateEnd)) {
+    var error = document.getElementById("errorAddPeriod").value;
+    console.log("error !");
+  } else {
+    var fcPeriod = new FCPeriode(dateStart, dateEnd, titre, color);
+    frise.dataPeriodes.push(fcPeriod);
+    console.log(frise.dataPeriodes);
+    frise.actualiserFrise();
+  }
+}
+
+function addEvent() {
+  console.log("addEvent");
+
+  var titre = document.getElementById("newEventTitre").value;
+  var start = document.getElementById("newEventDateStart").value;
+  var end = document.getElementById("newEventDateEnd").value;
+
+  start = UtilsDate.inputValueToDate(start);
+  end = UtilsDate.inputValueToDate(end);
+
+  // Verif !
+  if (UtilsDate.checkIfIsBefore(start, end)) {
+    var error = document.getElementById("errorAddEvent").value;
+    console.log("error !");
+  } else {
+    var fcEvent = new FCEvent(start, end, titre);
+    frise.dataEvent.push(fcEvent);
+    console.log(frise.dataEvent);
+    frise.actualiserFrise();
+  }
+}
+//#endregion
+
+//#region CALLBACK & FUNCTION
 window.addEventListener("resize", debounce(onResize));
 
 onResize();
@@ -115,8 +211,8 @@ function onResize() {
   var c1H = positionInfo.height;
 
   var newHeight = bodyHeight - c1H;
-  document.getElementById("menu-container").style.height =
-    newHeight - 40 + "px";
+  // document.getElementById("menu-container").style.height =
+  // newHeight - 40 + "px";
 }
 
 // debouncing pour optimiser les perf et éviter de faire crash le moteur de recherche
