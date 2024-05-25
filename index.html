@@ -11,8 +11,9 @@
   <link rel="stylesheet" type="text/css" href="res/css/loading.css" />
   <link rel="stylesheet" type="text/css" href="res/css/scrollbar.css" />
   <link rel="stylesheet" type="text/css" href="res/css/device-manager.css" />
+  <link rel="stylesheet" type="text/css" href="res/css/d3-svg.css" />
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-  <!--  <script src="https://kit.fontawesome.com/73275a3fef.js" crossorigin="anonymous"></script> -->
+  <script src="https://kit.fontawesome.com/73275a3fef.js" crossorigin="anonymous"></script>
   <script src="res/js/d3.v7.min.js"></script>
 </head>
 
@@ -66,8 +67,8 @@
         </button>
         <a class="separator">|</a>
         <button class="modern-button" id="otherParameter">
-          <i class="fa-solid fa-timeline"></i>
-          Other
+          <i class="fa-solid fa-ellipsis"></i>
+          Autre
         </button>
         <a class="separator">|</a>
         <button class="modern-button" id="resetZoom">
@@ -101,6 +102,18 @@
               <span>
                 <i class="fa-solid fa-screwdriver-wrench"></i>
                 Utiliser la Toolbox pour sélectionner le menu qui vous intéresse
+              </span>
+            </div>
+            <div>
+              <span>
+                <i class="fa-solid fa-trash"></i>
+                Pour supprimer un élément sur la frise, cliquer sur l'élément à supprimer.
+              </span>
+            </div>
+            <div>
+              <span>
+                <i class="fa-solid fa-trash"></i>
+                Pour tout supprimer, cliquer sur l'onglet "Autre" puis "Tout supprimer"
               </span>
             </div>
           </div>
@@ -178,19 +191,16 @@
               Modifier le style
             </h3>
             <div>
-              <i class="fa-solid fa-bars"></i>
-              Maximum de lettre pour chaque ligne :
-              <input id="maxCharPerLigne" type="range" min="1" max="60" value="15"
-                oninput="this.nextElementSibling.value = this.value" />
-              <output>15</output>
-            </div>
-
-            <div>
               <i class="fa-solid fa-font"></i>
               Font size pour les périodes :
               <input type="range" id="txtSizePeriod" min="1" max="50" value="15"
                 oninput="this.nextElementSibling.value = this.value" />
               <output>15</output>
+            </div>
+            <div>
+              <i class="fa-solid fa-paintbrush"></i>
+              Couleur du text :
+              <input type="color" id="txtColorPeriod" value="#ffffff">
             </div>
           </div>
         </div>
@@ -225,9 +235,9 @@
             <div>
               <i class="fa-solid fa-font"></i>
               Font size pour les événements :
-              <input type="range" id="eventFontSize" min="1" max="50" value="12"
+              <input type="range" id="eventFontSize" min="1" max="50" value="21"
                 oninput="this.nextElementSibling.value = this.value" />
-              <output>12</output>
+              <output>21</output>
             </div>
             <div>
               <input type="color" id="eventColorFont" value="#ffffff" />
@@ -255,9 +265,29 @@
               Autre
             </h3>
             <div>
-              <input id="otherDrawAxi" type="checkbox" value="true">
+              <input id="otherDrawAxi" type="checkbox" checked="true">
+              Afficher l'axe des dates
             </div>
-            Afficher l'axe des dates
+            <div>
+              <i class="fa-solid fa-bars"></i>
+              Maximum de lettre pour chaque ligne :
+              <input id="maxCharPerLine" type="range" min="1" max="60" value="19"
+                oninput="this.nextElementSibling.value = this.value" />
+              <output>19</output>
+            </div>
+            <div>
+              <i class="fa-solid fa-paintbrush"></i>
+              Couleur du fond :
+              <input type="color" id="otherBackgroundColor" value="#242424">
+            </div>
+            <button id="btnOtherClean" class="modern-button">
+              <i class="fa-solid fa-trash"></i>
+              Tout supprimer
+            </button>
+            <button id="btnExport" class="modern-button">
+              <i class="fa-solid fa-file-arrow-down"></i>
+              Export png
+            </button>
           </div>
         </div>
       </div>
@@ -281,6 +311,11 @@
   </footer>
 
   <script type="module" src="res/js/main.js"></script>
+  <script src="res/js/svg-export.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-save-svg/0.2.0/d3-save-svg.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-toBlob.js/1.0.0/canvas-toBlob.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
   <!--<script src="res/js/draggable.js"></script>-->
 </body>
 

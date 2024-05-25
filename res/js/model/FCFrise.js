@@ -1,4 +1,3 @@
-import { UtilsArray } from "../utils/UtilsArray.js";
 import { UtilsString } from "../utils/UtilsString.js";
 import { FCDate } from "./FCDate.js";
 import { FCEvent } from "./FCEvent.js";
@@ -7,9 +6,9 @@ import { FCPeriode } from "./FCPeriode.js";
 export class FCFrise {
   //#region CONSTRUCTOR
   constructor() {
-    this.dataPeriodes = FCPeriode.defaultPeriodes;
-    this.dataEvent = FCEvent.defaultEvents;
-    this.dataDate = FCDate.defaultDates;
+    this.dataPeriodes = FCPeriode.napoleonPeriodes;
+    this.dataEvent = FCEvent.napoleonEvents;
+    this.dataDate = FCDate.napoleonDates;
 
     this.zoomFactor = 50;
 
@@ -18,12 +17,13 @@ export class FCFrise {
 
     // event param
     this.eventFontColor = "#ffffff";
-    this.maxCharPerLigne = 50;
+    this.maxCharPerLine = 50;
 
     // Création de l'élément SVG
     this.svg = d3
       .select("#chart-container")
       .append("svg")
+      .attr("id", "myTimeline")
       .attr("width", this.width)
       .attr("height", this.height);
 
@@ -76,7 +76,6 @@ export class FCFrise {
   }
 
   resetZoom() {
-    console.log("tetsetests");
     this.width = parent.innerWidth - 100;
     this.redimensionnerX();
   }
@@ -104,7 +103,7 @@ export class FCFrise {
 
   redimensionnerY() {
     // Je part du principe que la frise prend 50px de hauteur
-    this.marginBottom = this.shouldDrawAxi ? 200 : 150;
+    this.marginBottom = this.shouldDrawAxi ? 70 : 0;
     // Dimensions par défault de la frise chronologique
     this.height = this.heightEvent + this.marginBottom; // A modifier un jour
     this.svg.attr("height", this.height);
@@ -112,9 +111,11 @@ export class FCFrise {
 
   // Fonction pour actualiser la frise chronologique avec les nouvelles données
   actualiserFrise() {
-    this.heightDate = 30; // Hauteur par défault
+    this.heightDate = 40; // Hauteur par défault
 
     this.svg.selectAll("*").remove();
+
+    if (this.dataPeriodes.length <= 0) return;
 
     // reorganiser les listes d'object
     this.dataDate.sort((a, b) => a.date - b.date);
@@ -127,7 +128,7 @@ export class FCFrise {
     // Ajout des barres pour représenter les dates
     // TEXT
     this.dataDate.forEach((date) => {
-      var lines = UtilsString.wrapText(date.title, this.maxCharPerLigne);
+      var lines = UtilsString.wrapText(date.title, this.maxCharPerLine);
       this.svg
         .selectAll("dateText")
         .data(lines)
@@ -138,7 +139,7 @@ export class FCFrise {
         .attr("x", () => {
           return this.xScaleDate(date.date);
         })
-        .attr("y", (d, i) => this.heightDate + i * 20 - (lines.length - 1) * 10)
+        .attr("y", (d, i) => this.heightDate + i * 20) // - (lines.length - 1) * 10)
         .style("font-family", "Roboto, Noto Sans, system-ui")
         .style("fill", "white")
         .style("font-size", this.fontSizeDate)
@@ -168,6 +169,22 @@ export class FCFrise {
     //#region === PERIOD ==
     this.heightPeriod = this.heightDate + 70;
 
+    // BG
+    var bgX = this.xScaleDate(FCPeriode.getFirstDate(this.dataPeriodes));
+    var bgWidth = this.xScaleDate(FCPeriode.getLastDate(this.dataPeriodes));
+    var bgWidth = bgWidth - bgX;
+
+    this.periodLineHeight = 50;
+
+    this.svg
+      .append("rect")
+      .attr("x", bgX + 1)
+      .attr("y", this.heightPeriod - (this.periodLineHeight / 2 - 1))
+      .attr("width", bgWidth)
+      .attr("height", this.periodLineHeight - 2)
+      .attr("fill", "none")
+      .attr("class", "border-pattern");
+
     // Ajout des lignes pour ajouter les périodes
     this.svg
       .selectAll("period")
@@ -175,7 +192,7 @@ export class FCFrise {
       .enter()
       .append("line")
       .style("stroke", (d) => d.color)
-      .style("stroke-width", 50)
+      .style("stroke-width", this.periodLineHeight)
       .attr("x1", (d) => this.xScaleDate(d.dateDebut))
       .attr("y1", this.heightPeriod)
       .attr("x2", (d) => this.xScaleDate(d.dateFin))
@@ -188,7 +205,7 @@ export class FCFrise {
 
     // Ajout du text pour les périodes
     this.dataPeriodes.forEach((period) => {
-      var lines = UtilsString.wrapText(period.title, this.maxCharPerLigne);
+      var lines = UtilsString.wrapText(period.title, this.maxCharPerLine);
       this.svg
         .selectAll("period")
         .data(lines)
@@ -207,7 +224,7 @@ export class FCFrise {
           (d, i) => this.heightPeriod + i * 20 - (lines.length - 1) * 10
         )
         .style("font-family", "Roboto, Noto Sans, system-ui")
-        .style("fill", "black")
+        .style("fill", this.periodFontColor)
         .style("font-size", this.fontSizePeriod)
         .style("pointer-events", "none")
         .text((d) => d);
@@ -241,6 +258,7 @@ export class FCFrise {
       ];
 
       this.dessinerEvent(event, points);
+      // this.updateHeightTxt();
     });
     //#endregion
 
@@ -264,19 +282,23 @@ export class FCFrise {
       .attr("fill", this.eventArrowColor); // Changer la couleur de la flèche en bleu
     //#endregion === EVENT ===
 
-    const eventTextY = this.getHighestYIn("text");
-    this.heightEvent = dateTextY;
-
-    console.log(this.heightEvent);
-
     //#region === AXI ===
+    const eventTextY = this.getHighestYIn("text");
+    this.heightEvent = eventTextY;
     // Ajout des axes
     if (this.shouldDrawAxi) {
       this.svg
         .append("g")
-        .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
+        .attr("color", "white")
+        .attr(
+          "transform",
+          `translate(0,${this.heightEvent + this.margin.bottom})`
+        )
         .call(d3.axisBottom(this.xScaleDate));
     }
+
+    this.redimensionnerY();
+
     //#endregion
   }
 
@@ -291,7 +313,7 @@ export class FCFrise {
     const line = this.svg
       .append("line")
       .attr("x1", points[0].x) // Position x de départ de la flèche (à ajuster)
-      .attr("y1", points[0].y + 20) // Position y de départ de la flèche (à ajuster)
+      .attr("y1", points[0].y) // Position y de départ de la flèche (à ajuster)
       .attr("x2", points[0].x) // Position x d'arrivée de la flèche (correspond à x du texte)
       .attr("y2", points[0].y + 50) // Position y d'arrivée de la flèche (correspond à y du texte)
       .attr("stroke", this.eventArrowColor)
@@ -309,13 +331,38 @@ export class FCFrise {
       .on("mouseover", (event) => fcevent.onHoverIn(event))
       .on("mouseout", (event) => fcevent.onHoverOut(event));
 
+    var textPosX = points[0].x - 5;
+    var textPosY = points[0].y + 75;
     this.svg
       .append("text")
-      .attr("x", points[0].x - 5) // Position horizontale du texte
-      .attr("y", points[0].y + 75) // Position verticale du texte
+      .attr("x", textPosX) // Position horizontale du texte
+      .attr("y", textPosY) // Position verticale du texte
       .text(fcevent.title)
       .style("Roboto, Noto Sans, system-ui", this.eventFontSize)
       .style("fill", this.eventFontColor);
+  }
+
+  /**
+   * Je veux mettre à jour les textes pour qu'il ne se chevauche pas.
+   */
+  updateHeightTxt() {
+    const texts = this.svg.selectAll("text");
+
+    texts.each(function () {
+      // Check for overlap and adjust y position
+      let textPosX = this.x;
+      let textPosY = this.y;
+
+      texts.each(function () {
+        const y = +d3.select(this).attr("y");
+        const bbox = this.getBBox();
+        if (textPosX < bbox.x + bbox.width && textPosX > bbox.x) {
+          if (textPosY < y) {
+            textPosY = textPosY + 15; // Adjust position to avoid overlap
+          }
+        }
+      });
+    });
   }
 
   dessinerLaFleche() {

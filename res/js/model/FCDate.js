@@ -2,6 +2,13 @@ import { UtilsDate } from "../utils/UtilsDate.js";
 import { FCFrise } from "./FCFrise.js";
 
 export class FCDate {
+  static napoleonDates = [
+    new FCDate(new Date(1789, 5, 5), "Révolution Francaise"),
+    new FCDate(new Date(1815, 6, 18), "Défaite de Napoléon B. à Waterloo"),
+    new FCDate(new Date(1830, 7, 29), "Révolution des Trois Glorieuses"),
+    new FCDate(new Date(1848, 6, 25), "Révolution"),
+  ];
+
   static defaultDates = [
     new FCDate(UtilsDate.ZERO, "Evenement 1"),
     new FCDate(new Date(400, 0, 0), "Evenemnt2"),
@@ -64,13 +71,15 @@ export class FCDate {
     }
   }
 
-  onHoverIn(event){
+  onHoverIn(event) {
     // Afficher le tooltip
     const tooltip = document.querySelector("#tooltip");
     tooltip.style.display = "block";
 
     // Mettre à jour les informations du tooltip
-    document.getElementById("tooltip-date").innerText = UtilsDate.getString(this.date);
+    document.getElementById("tooltip-date").innerText = UtilsDate.getString(
+      this.date
+    );
     document.getElementById("tooltip-event").innerText = this.title;
 
     // Positionner le tooltip par rapport à la position de la souris
@@ -78,14 +87,14 @@ export class FCDate {
     tooltip.style.top = event.pageY + 10 + "px";
   }
 
-  onHoverOut(event){
+  onHoverOut(event) {
     // Masquer le tooltip lorsque la souris quitte l'élément
     const tooltip = document.querySelector("#tooltip");
     tooltip.style.display = "none";
   }
 
-  onClick(frise, event){
-    frise.dataDate = frise.dataDate.filter(item => item != this);
+  onClick(frise, event) {
+    frise.dataDate = frise.dataDate.filter((item) => item != this);
     frise.actualiserFrise();
   }
 }

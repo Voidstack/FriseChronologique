@@ -3,8 +3,8 @@ export class UtilsDate {
 
   /**
    * Retourne un string au format DD-MM-AAAA.
-   * @param {Date} date 
-   * @returns 
+   * @param {Date} date
+   * @returns
    */
   static getString(date) {
     let day = date.getDate();
@@ -18,9 +18,9 @@ export class UtilsDate {
     return `${day}/${month}/${year}`;
   }
 
-  static inputValueToDate(value){
+  static inputValueToDate(value) {
     // Diviser la chaîne en composants de date (année, mois, jour)
-    const [year, month, day] = value.split('-').map(Number);
+    const [year, month, day] = value.split("-").map(Number);
     // Créer un nouvel objet Date avec les composants extraits
     // Notez que les mois dans l'objet Date commencent à 0 (janvier) jusqu'à 11 (décembre)
     const date = new Date(year, month - 1, day);
@@ -29,21 +29,30 @@ export class UtilsDate {
 
   /**
    * Return true si start < end.
-   * @param {Date} start 
-   * @param {Date} end 
+   * @param {Date} start
+   * @param {Date} end
    * @returns {boolean}
    */
-  static checkIfIsBefore(start, end){
+  static checkIfIsBefore(start, end) {
     return start < end;
   }
 
   // Retourne la dernière date d'une [] de dates
-  static getLastDate(dates) {    
+  static getLastDate(dates) {
     // Trier les dates dans l'ordre chronologique
     dates.sort((a, b) => a - b);
     // Récupérer la dernière date de la liste triée
-    const derniereDate = dates[dates.length - 1];
-    return derniereDate;
+    return dates[dates.length - 1];
+  }
+
+  /**
+   * Retourne la première date d'une liste
+   * @param {Dates[]} dates
+   * @returns
+   */
+  static getFirstDate(dates) {
+    dates.sort((a, b) => a + b);
+    return dates[dates.length - 1];
   }
 
   // Retourne la date suivante la plus proche de dateEntree contenue dans la liste de Dates listeDates

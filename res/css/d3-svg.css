@@ -1,0 +1,6 @@
+.border-pattern {
+    stroke: white;
+    stroke-width: 2;
+    stroke-dasharray: 4, 3;
+    /* Alternating pattern: 4 units on, 2 units off */
+}

@@ -4,10 +4,11 @@ html {
 
   --bg-color: #121212;
   --container-color: #242424;
-  --btn-color: #23b77a;
-  --btn-color-hover:#1c9764;
-  --btn-color-active:#16724c;
+  --btn-color: #AA88FF;
+  --btn-color-hover: #956cff;
+  --btn-color-active: #8251ff;
 }
+
 main {
   overflow-y: visible;
   overflow-x: hidden;
@@ -25,7 +26,8 @@ h3 {
 
 body {
   margin: 10px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Police d'écriture moderne */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /* Police d'écriture moderne */
   color: #e4e4e4;
   background-color: var(--bg-color);
 }
@@ -58,12 +60,12 @@ body {
   text-decoration: none;
 }
 
-.verticalBox{
+.verticalBox {
   display: flex;
   flex-direction: row;
 }
 
-.separator{
+.separator {
   color: rgba(0, 0, 0, 0);
   min-height: 30px;
   min-width: 1px;
@@ -72,7 +74,7 @@ body {
   background: var(--bg-color);
 }
 
-.horizontalBox{
+.horizontalBox {
   display: flex;
   flex-direction: column;
   border-left: 5px solid white;
@@ -163,7 +165,7 @@ body {
   display: none;
 }
 
-#tooltip > * {
+#tooltip>* {
   margin-top: 0px !important;
   margin-bottom: 5px;
 }
@@ -176,7 +178,8 @@ body {
   width: fit-content;
   right: 25px;
   background-color: #191919b5;
-  z-index: 9999; /* Assure que la div est au-dessus de tous les autres éléments */
+  z-index: 9999;
+  /* Assure que la div est au-dessus de tous les autres éléments */
 
   display: flex;
   flex-direction: column;
@@ -185,28 +188,56 @@ body {
 
 /* Styles de base */
 .modern-button {
-  background-color: var(--btn-color); /* Couleur de fond */
-  border: none; /* Pas de bordure */
-  color: white; /* Couleur du texte */
-  padding: 7px 10px; /* Espacement à l'intérieur du bouton */
-  text-align: center; /* Alignement du texte */
-  text-decoration: none; /* Pas de soulignement */
-  display: inline-block; /* Afficher en ligne */
-  font-size: 16px; /* Taille de la police */
-  margin: 4px 2px; /* Marge autour du bouton */
-  cursor: pointer; /* Curseur */
-  border-radius: 8px; /* Bord arrondi */
-  transition-duration: 0.4s; /* Durée de l'animation */
+  position: relative;
+  background-color: var(--btn-color);
+  border: none;
+  color: white;
+  padding: 7px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition-duration: 0.4s;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.modern-button i {
+  position: absolute;
+  left: 10px;
+  /* Adjust the position of the icon as needed */
+  font-size: 20px;
+  /* Adjust icon size if necessary */
+  pointer-events: none;
+  /* Ensure the icon does not interfere with button clicks */
+}
+
+.modern-button i.fa-solid {
+  display: inline-block;
+  width: 20px;
+  /* Adjust the width if needed */
+  text-align: center;
 }
 
 /* Style au survol */
 .modern-button:hover {
-  background-color: var(--btn-color-hover); /* Nouvelle couleur de fond */
-  color: white; /* Nouvelle couleur du texte */
+  background-color: var(--btn-color-hover);
+  /* Nouvelle couleur de fond */
+  color: white;
+  /* Nouvelle couleur du texte */
 }
 
 /* Style enfoncé */
 .modern-button:active {
-  background-color: var(--btn-color-active); /* Nouvelle couleur de fond enfoncée */
-  color: white; /* Nouvelle couleur du texte enfoncé */
+  background-color: var(--btn-color-active);
+  /* Nouvelle couleur de fond enfoncée */
+  color: white;
+  /* Nouvelle couleur du texte enfoncé */
 }

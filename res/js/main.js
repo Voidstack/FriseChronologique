@@ -9,16 +9,15 @@ const frise = new FCFrise();
 const loadingIcons = document.getElementsByClassName("loading-icon");
 const menuContainer = document.getElementById("menu-container");
 
-document
-  .querySelector("#txtSizePeriod")
-  .addEventListener("input", debounce(changeSizePeriod, 500));
-document
-  .querySelector("#txtSizeDate")
-  .addEventListener("input", debounce(changeSizeDate, 500));
-document
-  .querySelector("#maxCharPerLigne")
-  .addEventListener("input", debounce(changeCharPerLigne, 500));
+// MAX CHAR PER LINE
+const maxCharPerLine = document.getElementById("maxCharPerLine");
+frise.maxCharPerLine = maxCharPerLine.value;
+maxCharPerLine.addEventListener("input", (event) => {
+  frise.maxCharPerLine = event.target.value;
+  frise.actualiserFrise();
+});
 
+// EVENT
 const eventFontSize = document.getElementById("eventFontSize");
 frise.eventFontSize = eventFontSize.value;
 eventFontSize.addEventListener("input", (event) => {
@@ -47,6 +46,22 @@ eventFontColor.addEventListener("input", (event) => {
   frise.actualiserFrise();
 });
 
+// PERIOD
+const txtSizePeriod = document.getElementById("txtSizePeriod");
+frise.fontSizePeriod = txtSizePeriod.value;
+txtSizePeriod.addEventListener("input", (event) => {
+  frise.fontSizePeriod = event.target.value;
+  frise.actualiserFrise();
+});
+
+const periodFontColor = document.getElementById("txtColorPeriod");
+frise.periodFontColor = periodFontColor.value;
+periodFontColor.addEventListener("input", (event) => {
+  frise.periodFontColor = event.target.value;
+  frise.actualiserFrise();
+});
+
+// DATE
 const dateSymbolColor = document.getElementById("dateSymbolColor");
 frise.dateSymbolColor = dateSymbolColor.value;
 dateSymbolColor.addEventListener("input", (event) => {
@@ -54,15 +69,27 @@ dateSymbolColor.addEventListener("input", (event) => {
   frise.actualiserFrise();
 });
 
+const txtSizeDate = document.getElementById("txtSizeDate");
+frise.fontSizeDate = txtSizeDate.value;
+txtSizeDate.addEventListener("input", (event) => {
+  frise.fontSizeDate = event.target.value;
+  frise.actualiserFrise();
+});
+
 // OTHER
 const otherDrawAxi = document.getElementById("otherDrawAxi");
 frise.shouldDrawAxi = otherDrawAxi.checked;
-console.log(otherDrawAxi.checked);
 otherDrawAxi.addEventListener("change", (event) => {
-  console.log(event.target.checked);
   frise.shouldDrawAxi = event.target.checked;
   frise.redimensionnerY();
   frise.actualiserFrise();
+});
+
+const otherBackgroundColor = document.getElementById("otherBackgroundColor");
+const charContainer = document.getElementById("chart-container");
+charContainer.style.background = otherBackgroundColor.value;
+otherBackgroundColor.addEventListener("input", (event) => {
+  charContainer.style.background = event.target.value;
 });
 
 frise.actualiserFrise();
@@ -90,6 +117,12 @@ document
 document
   .querySelector("#otherParameter")
   .addEventListener("click", () => afficherSubMenu(menuOther));
+document.getElementById("btnOtherClean").addEventListener("click", () => {
+  frise.dataDate = [];
+  frise.dataEvent = [];
+  frise.dataPeriodes = [];
+  frise.actualiserFrise();
+});
 //#endregion
 
 document
@@ -102,30 +135,6 @@ document.querySelector("#btnAddEvent").addEventListener("click", addEvent);
 onwheel = function (event) {
   frise.callOnWheel(event);
 };
-
-function resetZoom() {
-  alert("unimplemented method");
-}
-
-function changeSizePeriod(event) {
-  frise.fontSizePeriod = event.target.value + "px";
-  frise.actualiserFrise();
-}
-
-function changeSizeEvent(event) {
-  frise.fontSizeEvent = event.target.value + "px";
-  frise.actualiserFrise();
-}
-
-function changeSizeDate(event) {
-  frise.fontSizeDate = event.target.value + "px";
-  frise.actualiserFrise();
-}
-
-function changeCharPerLigne(event) {
-  frise.maxCharPerLigne = event.target.value;
-  frise.actualiserFrise();
-}
 
 function afficherSubMenu(submenu) {
   menuDate.style.display = "none";
@@ -159,13 +168,14 @@ function addPeriod() {
   dateEnd = UtilsDate.inputValueToDate(dateEnd);
 
   // Verif !
-  if (UtilsDate.checkIfIsBefore(dateStart, dateEnd)) {
+  if (UtilsDate.checkIfIsBefore(dateEnd, dateStart)) {
     var error = document.getElementById("errorAddPeriod").value;
     console.log("error !");
   } else {
     var fcPeriod = new FCPeriode(dateStart, dateEnd, titre, color);
     frise.dataPeriodes.push(fcPeriod);
     console.log(frise.dataPeriodes);
+    frise.redimensionnerX();
     frise.actualiserFrise();
   }
 }
